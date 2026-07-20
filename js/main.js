@@ -1,6 +1,7 @@
 import { config } from './config.js';
 import { initAnimations } from './animations.js';
 import { initTheme } from './theme.js';
+import { renderToolIcon } from './icons.js';
 
 function applyThemeVars() {
   const { theme, typography } = config;
@@ -181,16 +182,22 @@ function renderBrands() {
   banner.innerHTML = `<div class="brands-track">${items}${items}</div>`;
 }
 
-function renderSkills() {
-  const toolsEl = document.getElementById('skills-tools');
-  const tagsEl = document.getElementById('skills-tags');
+function renderToolTile(tool) {
+  return `
+    <div class="tool-icon" style="background:${tool.color}" data-name="${tool.name}" title="${tool.name}">
+      <span class="tool-icon__svg">${renderToolIcon(tool.icon)}</span>
+      <span class="tool-icon__label">${tool.name}</span>
+    </div>`;
+}
 
-  toolsEl.innerHTML = config.skills.tools
-    .map(
-      (t) =>
-        `<div class="tool-icon" style="background:${t.color}" data-name="${t.name}" title="${t.name}">${t.icon.toUpperCase().slice(0, 2)}</div>`
-    )
-    .join('');
+function renderSkills() {
+  const trackEl = document.getElementById('skills-track');
+  const marqueeEl = document.getElementById('skills-marquee');
+  const tagsEl = document.getElementById('skills-tags');
+  const tiles = config.skills.tools.map(renderToolTile).join('');
+
+  trackEl.innerHTML = `${tiles}${tiles}`;
+  marqueeEl.style.setProperty('--skills-scroll-duration', `${config.skills.scrollSpeed}s`);
 
   tagsEl.innerHTML = config.skills.categories
     .map((c) => `<span class="skill-tag">${c}</span>`)

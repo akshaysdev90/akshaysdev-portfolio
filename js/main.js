@@ -1,7 +1,6 @@
 import { config } from './config.js';
 import { initAnimations } from './animations.js';
 import { initTheme } from './theme.js';
-import { renderToolIcon } from './icons.js';
 
 function applyThemeVars() {
   const { theme, typography } = config;
@@ -184,9 +183,8 @@ function renderBrands() {
 
 function renderToolTile(tool) {
   return `
-    <div class="tool-icon" style="background:${tool.color}" data-name="${tool.name}" title="${tool.name}">
-      <span class="tool-icon__svg">${renderToolIcon(tool.icon)}</span>
-      <span class="tool-icon__label">${tool.name}</span>
+    <div class="tool-icon" data-name="${tool.name}" title="${tool.name}">
+      <img class="tool-icon__img" src="${tool.logo}" alt="${tool.name}" loading="lazy" width="48" height="48">
     </div>`;
 }
 
@@ -196,12 +194,49 @@ function renderSkills() {
   const tagsEl = document.getElementById('skills-tags');
   const tiles = config.skills.tools.map(renderToolTile).join('');
 
-  trackEl.innerHTML = `${tiles}${tiles}`;
+  trackEl.innerHTML = `
+    <div class="skills-set">${tiles}</div>
+    <div class="skills-set" aria-hidden="true">${tiles}</div>`;
+
   marqueeEl.style.setProperty('--skills-scroll-duration', `${config.skills.scrollSpeed}s`);
+
+  const measure = () => initSeamlessMarquee(trackEl);
+  requestAnimationFrame(measure);
+  trackEl.querySelectorAll('img').forEach((img) => {
+    if (!img.complete) img.addEventListener('load', measure, { once: true });
+  });
 
   tagsEl.innerHTML = config.skills.categories
     .map((c) => `<span class="skill-tag">${c}</span>`)
     .join('');
+}
+
+function initSeamlessMarquee(trackEl) {
+  const set = trackEl.querySelector('.skills-set');
+  const marqueeEl = trackEl.closest('.skills-marquee');
+  if (!set || !marqueeEl) return;
+
+  const measure = () => {
+    const gap = parseFloat(getComputedStyle(set).gap) || 16;
+
+    // Size tiles so `visibleCount` logos fit in the viewport, capped to a sensible size
+    const count = config.skills.visibleCount || 5;
+    const maxSize = config.skills.maxTileSize || 72;
+    const tileSize = Math.min((marqueeEl.clientWidth - gap * (count - 1)) / count, maxSize);
+    marqueeEl.style.setProperty('--tool-tile-size', `${tileSize}px`);
+
+    const distance = set.getBoundingClientRect().width + gap;
+    trackEl.style.setProperty('--marquee-distance', `${distance}px`);
+  };
+
+  measure();
+
+  if (trackEl._marqueeResize) {
+    window.removeEventListener('resize', trackEl._marqueeResize);
+  }
+
+  trackEl._marqueeResize = measure;
+  window.addEventListener('resize', trackEl._marqueeResize, { passive: true });
 }
 
 function renderFooter() {

@@ -561,7 +561,7 @@ ul { list-style: none; }
   padding: clamp(1.5rem, 4vw, var(--space-xl)) clamp(1rem, 3vw, var(--space-lg));
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   align-items: center;
 }
 
@@ -577,94 +577,79 @@ ul { list-style: none; }
   grid-column: 1 / -1;
   overflow: hidden;
   width: 100%;
-  padding: var(--space-sm) 0;
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 8%,
-    black 92%,
-    transparent
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 8%,
-    black 92%,
-    transparent
-  );
+  /* Extra bottom padding keeps the hover name label visible inside the clip area */
+  padding: var(--space-xs) 0 2.3rem;
 }
 
 .skills-track {
   display: flex;
   align-items: center;
-  gap: clamp(0.75rem, 2vw, 1.25rem);
   width: max-content;
-  animation: skillsMarquee var(--skills-scroll-duration, 35s) linear infinite;
+  animation: skillsMarquee var(--skills-scroll-duration, 45s) linear infinite;
   will-change: transform;
 }
 
-.skills-marquee:hover .skills-track,
-.skills-marquee:focus-within .skills-track {
-  animation-play-state: paused;
+.skills-set {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 1.6vw, 1.15rem);
+  flex-shrink: 0;
+  padding-right: clamp(0.7rem, 1.6vw, 1.15rem);
 }
 
 @keyframes skillsMarquee {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  100% { transform: translateX(calc(-1 * var(--marquee-distance, 50%))); }
 }
 
 .tool-icon {
-  width: clamp(3.5rem, 8vw, 4.5rem);
-  height: clamp(3.5rem, 8vw, 4.5rem);
-  border-radius: var(--radius-md);
+  width: var(--tool-tile-size, 3.4rem);
+  height: var(--tool-tile-size, 3.4rem);
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.15rem;
-  color: white;
-  transition: transform var(--duration-normal) var(--ease-out-expo),
-              box-shadow var(--duration-normal) var(--ease-out-expo);
-  cursor: default;
-  position: relative;
   flex-shrink: 0;
-  overflow: hidden;
+  position: relative;
+  cursor: default;
+  transition: transform var(--duration-normal) var(--ease-out-expo);
 }
 
 .tool-icon:hover {
-  transform: translateY(-4px) scale(1.05);
-  box-shadow: var(--shadow-hover);
+  transform: translateY(-6px) scale(1.05);
 }
 
-.tool-icon__svg {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 55%;
-  height: 55%;
-}
-
-.tool-icon__svg svg {
-  width: 100%;
-  height: 100%;
-}
-
-.tool-icon__label {
-  position: absolute;
-  bottom: -1.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.62rem;
-  color: var(--color-text-muted);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity var(--duration-fast), bottom var(--duration-fast);
+.tool-icon__img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  display: block;
+  border-radius: 0.6rem;
   pointer-events: none;
 }
 
-.tool-icon:hover .tool-icon__label {
+.tool-icon::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: -1.8rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  background: var(--color-bg-secondary);
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--duration-fast), transform var(--duration-fast);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.tool-icon:hover::after {
   opacity: 1;
-  bottom: -1.5rem;
+  transform: translateX(-50%) translateY(0);
 }
 
 .skills-tags {
@@ -992,6 +977,10 @@ ul { list-style: none; }
     gap: var(--space-md);
   }
 
+  .skills-marquee {
+    grid-column: 1 / -1;
+  }
+
   .footer-top {
     grid-template-columns: 1fr;
     gap: var(--space-md);
@@ -1091,6 +1080,10 @@ ul { list-style: none; }
   .skills-card {
     grid-template-columns: 1fr;
     gap: var(--space-md);
+  }
+
+  .skills-marquee {
+    grid-column: 1 / -1;
   }
 
   .footer-top {
@@ -1269,6 +1262,11 @@ ul { list-style: none; }
     flex-wrap: wrap;
     justify-content: center;
     width: auto;
-    gap: var(--space-md);
+  }
+
+  .skills-set {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-right: 0;
   }
 }

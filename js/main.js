@@ -144,7 +144,6 @@ function renderTestimonials() {
     <blockquote class="testimonial-item${i === 0 ? ' active' : ''}" data-index="${i}">
       <p class="testimonial-quote">"${t.quote}"</p>
       <footer class="testimonial-author">
-        <strong>${t.author}</strong>
         <span>${[t.role, t.company].filter(Boolean).join(' — ')}</span>
       </footer>
     </blockquote>`
@@ -162,7 +161,7 @@ function renderTestimonials() {
   function updateAccent(index) {
     const photo = config.testimonials.items[index].photo;
     accent.innerHTML = photo
-      ? `<img src="${photo}" alt="${config.testimonials.items[index].author}">`
+      ? `<img src="${photo}" alt="">`
       : '';
   }
 
@@ -202,12 +201,18 @@ function renderTestimonials() {
 }
 
 function renderBrands() {
-  const banner = document.getElementById('brands-banner');
-  const items = config.brands.list
-    .map((b) => `<span class="brands-item">${b}</span><span class="brands-separator">·</span>`)
-    .join('');
+  const grid = document.getElementById('brands-grid');
+  if (!grid) return;
 
-  banner.innerHTML = `<div class="brands-track">${items}${items}</div>`;
+  grid.innerHTML = config.brands.list
+    .map((b, i) => {
+      const depth = (0.25 + ((i % 5) * 0.15)).toFixed(2);
+      return `
+      <article class="brands-cell" data-depth="${depth}" data-name="${b.name}">
+        <img class="brands-logo" src="${b.logo}" alt="${b.name}" loading="lazy" draggable="false">
+      </article>`;
+    })
+    .join('');
 }
 
 function renderToolTile(tool) {

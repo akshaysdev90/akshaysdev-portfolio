@@ -129,13 +129,12 @@ export const config = {
   testimonials: {
     title: "Testimonials",
     description: "What collaborators say about working together.",
-    // Each item: quote, author (name), role (designation), company,
-    // and optional photo (shown in the side panel; red block if omitted).
+    // Each item: quote, role (designation), company,
+    // and optional photo (shown in the side panel; accent color if omitted).
     items: [
       {
         quote:
           "Akshay brings a rare combination of editorial restraint and bold experimentation. Every deliverable felt considered, never over-designed.",
-        author: "Client Name",
         role: "Creative Director",
         company: "Studio North",
         photo: "",
@@ -143,7 +142,6 @@ export const config = {
       {
         quote:
           "His attention to typographic detail and visual hierarchy transformed our brand presence. A true craftsman of the digital medium.",
-        author: "Client Name",
         role: "Brand Manager",
         company: "Meridian Co.",
         photo: "",
@@ -151,7 +149,6 @@ export const config = {
       {
         quote:
           "Working with Akshay felt like a creative partnership, not a vendor relationship. He pushes boundaries while staying on brief.",
-        author: "Client Name",
         role: "Art Director",
         company: "Form & Field",
         photo: "",
@@ -162,9 +159,16 @@ export const config = {
   brands: {
     title: "Brands",
     description: "Selected collaborations and client work.",
+    // Official logos in a parallax grid — swap logo paths anytime.
     list: [
-      "Adobe", "Behance", "Meridian", "Studio North",
-      "Form & Field", "Pixel Lab", "Craft Co.", "Visual Arts",
+      { name: "Dorling Kindersley", logo: "assets/brands/dk.svg" },
+      { name: "BCG", logo: "assets/brands/bcg.svg" },
+      { name: "McCain", logo: "assets/brands/mccain.svg" },
+      { name: "Light & Wonder", logo: "assets/brands/lightwonder.svg" },
+      { name: "Accenture", logo: "assets/brands/accenture.svg" },
+      { name: "OakNorth", logo: "assets/brands/oaknorth.svg" },
+      { name: "Chegg", logo: "assets/brands/chegg.svg" },
+      { name: "Terumo", logo: "assets/brands/terumo.svg" },
     ],
   },
 

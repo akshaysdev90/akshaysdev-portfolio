@@ -30,6 +30,7 @@ export function initAnimations(config) {
     initMagneticHover();
     initCursorFollow();
     initInteractiveTiger(config);
+    initBrandsParallax();
   }
 }
 
@@ -164,6 +165,70 @@ function initInteractiveTiger(config) {
       targetY = dragOffsetY;
     }, 1400);
   });
+
+  window.addEventListener(
+    'beforeunload',
+    () => cancelAnimationFrame(rafId),
+    { once: true }
+  );
+}
+
+function initBrandsParallax() {
+  const grid = document.getElementById('brands-grid');
+  const section = document.getElementById('brands');
+  if (!grid || !section) return;
+
+  const cells = [...grid.querySelectorAll('.brands-cell')];
+  if (!cells.length) return;
+
+  let mouseX = 0.5;
+  let mouseY = 0.5;
+  let scrollOffset = 0;
+  let rafId = 0;
+  let visible = false;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      visible = entry.isIntersecting;
+    },
+    { threshold: 0.1 }
+  );
+  observer.observe(section);
+
+  const tick = () => {
+    if (visible) {
+      cells.forEach((cell) => {
+        const depth = parseFloat(cell.dataset.depth) || 0.4;
+        const x = (mouseX - 0.5) * 36 * depth;
+        const y = (mouseY - 0.5) * 28 * depth + scrollOffset * depth * 18;
+        cell.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+    }
+    rafId = requestAnimationFrame(tick);
+  };
+  rafId = requestAnimationFrame(tick);
+
+  section.addEventListener('mousemove', (e) => {
+    const rect = section.getBoundingClientRect();
+    mouseX = (e.clientX - rect.left) / rect.width;
+    mouseY = (e.clientY - rect.top) / rect.height;
+  });
+
+  section.addEventListener('mouseleave', () => {
+    mouseX = 0.5;
+    mouseY = 0.5;
+  });
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!visible) return;
+      const rect = section.getBoundingClientRect();
+      const progress = 1 - (rect.top + rect.height / 2) / window.innerHeight;
+      scrollOffset = Math.max(-1, Math.min(1, progress));
+    },
+    { passive: true }
+  );
 
   window.addEventListener(
     'beforeunload',

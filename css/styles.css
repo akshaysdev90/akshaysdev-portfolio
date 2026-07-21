@@ -512,9 +512,6 @@ html.dark .hero-tiger.is-dragging img {
   margin-top: var(--space-md);
   font-size: var(--text-xs);
   color: var(--color-text-muted);
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
 }
 
 .testimonial-author strong {
@@ -576,46 +573,57 @@ html.dark .hero-tiger.is-dragging img {
   transition: opacity var(--duration-slow) var(--ease-out-expo);
 }
 
-/* ---- Brands ---- */
-.brands-banner {
-  background: var(--color-bg-secondary);
-  border: 1px solid var(--color-border);
-  padding: clamp(1.5rem, 4vw, var(--space-xl)) clamp(1rem, 3vw, var(--space-lg));
-  text-align: center;
-  overflow: hidden;
-  position: relative;
+/* ---- Brands (logo grid + parallax) ---- */
+.brands-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem) clamp(0.75rem, 2vw, 1.5rem);
+  align-items: stretch;
+  perspective: 800px;
 }
 
-.brands-track {
+.brands-cell {
   display: flex;
-  gap: var(--space-xl);
-  animation: marquee 30s linear infinite;
-  width: max-content;
+  align-items: center;
+  justify-content: center;
+  /* Uniform tile so every logo sits in the same visual box */
+  height: clamp(4.25rem, 9vw, 5.75rem);
+  padding: 0.85rem 1rem;
+  will-change: transform;
+  transition: transform 0.15s var(--ease-out-expo);
 }
 
-.brands-track:hover {
-  animation-play-state: paused;
+.brands-logo {
+  /* Shared footprint: same max height + width for all marks */
+  width: 100%;
+  max-width: 9.5rem;
+  height: 2.4rem;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.78;
+  transition: opacity var(--duration-normal) var(--ease-out-expo),
+              filter var(--duration-normal) var(--ease-out-expo),
+              transform var(--duration-normal) var(--ease-out-expo);
+  pointer-events: none;
+  user-select: none;
 }
 
-.brands-item {
-  font-family: var(--font-heading);
-  font-size: var(--text-xl);
-  font-style: italic;
-  color: var(--color-text-secondary);
-  white-space: nowrap;
-  transition: color var(--duration-fast);
+.brands-cell:hover .brands-logo {
+  opacity: 1;
+  filter: grayscale(0) contrast(1.05);
+  transform: scale(1.06);
 }
 
-.brands-item:hover { color: var(--color-accent); }
-
-.brands-separator {
-  color: var(--color-text-muted);
-  font-style: normal;
+html.dark .brands-logo {
+  filter: grayscale(1) invert(1) contrast(1.05);
+  opacity: 0.85;
 }
 
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+html.dark .brands-cell:hover .brands-logo {
+  filter: grayscale(0) invert(1) contrast(1.1);
+  opacity: 1;
 }
 
 /* ---- Skills ---- */
@@ -1002,8 +1010,18 @@ body {
     padding: var(--space-md);
   }
 
-  .brands-item {
-    font-size: var(--text-lg);
+  .brands-grid {
+    gap: var(--space-sm);
+  }
+
+  .brands-cell {
+    height: 3.75rem;
+    padding: 0.6rem 0.75rem;
+  }
+
+  .brands-logo {
+    height: 1.85rem;
+    max-width: 7.5rem;
   }
 }
 
@@ -1074,6 +1092,10 @@ body {
   .skills-card {
     grid-template-columns: 1fr;
     gap: var(--space-md);
+  }
+
+  .brands-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .skills-marquee {
@@ -1163,6 +1185,10 @@ body {
     grid-template-columns: 1fr 1fr;
   }
 
+  .brands-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .footer-top {
     grid-template-columns: 1fr auto;
   }
@@ -1248,12 +1274,8 @@ body {
     transform: none;
   }
 
-  .brands-track {
-    animation: none;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: auto;
-    gap: var(--space-md);
+  .brands-cell {
+    transform: none !important;
   }
 
   .skills-track {

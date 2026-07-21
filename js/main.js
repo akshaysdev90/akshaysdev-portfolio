@@ -26,10 +26,11 @@ function applyThemeVars() {
 function populateNav() {
   const navList = document.getElementById('nav-list');
   navList.innerHTML = config.nav.links
-    .map(
-      (link) =>
-        `<li><a href="${link.href}"${link.external ? ' target="_blank" rel="noopener"' : ''}>${link.label}</a></li>`
-    )
+    .map((link) => {
+      const external = link.external ? ' target="_blank" rel="noopener"' : '';
+      const download = link.download ? ` download="${link.download}"` : '';
+      return `<li><a href="${link.href}"${external}${download}>${link.label}</a></li>`;
+    })
     .join('');
 }
 
@@ -84,9 +85,25 @@ function renderProjects() {
     card.addEventListener('click', () => {
       const id = card.dataset.projectId;
       const project = [...projects, ...hiddenProjects].find((p) => String(p.id) === id);
-      if (project) openLightbox([project]);
+      if (project) openProject(project);
     });
   });
+}
+
+/**
+ * Click behavior for a project card:
+ * - If `link` is a real URL, open the project page in a new tab.
+ * - Otherwise open the lightbox with the project's `images` gallery
+ *   (or its single `image` as fallback).
+ */
+function openProject(project) {
+  if (project.link && project.link !== '#') {
+    window.open(project.link, '_blank', 'noopener');
+    return;
+  }
+  const gallery = (project.images && project.images.length ? project.images : [project.image])
+    .map((src) => ({ image: src, title: project.title }));
+  openLightbox(gallery);
 }
 
 function loadHiddenProjects(hiddenProjects) {
@@ -108,7 +125,7 @@ function loadHiddenProjects(hiddenProjects) {
         <h3 class="project-title">${p.title}</h3>
         <p class="project-category">${p.category}</p>
       </div>`;
-    card.addEventListener('click', () => openLightbox([p]));
+    card.addEventListener('click', () => openProject(p));
     grid.insertBefore(card, loadMore);
   });
 
@@ -119,6 +136,7 @@ function loadHiddenProjects(hiddenProjects) {
 function renderTestimonials() {
   const track = document.getElementById('testimonial-track');
   const dots = document.getElementById('testimonial-dots');
+  const accent = document.getElementById('testimonial-accent');
 
   track.innerHTML = config.testimonials.items
     .map(
@@ -126,7 +144,8 @@ function renderTestimonials() {
     <blockquote class="testimonial-item${i === 0 ? ' active' : ''}" data-index="${i}">
       <p class="testimonial-quote">"${t.quote}"</p>
       <footer class="testimonial-author">
-        <strong>${t.author}</strong> — ${t.company}
+        <strong>${t.author}</strong>
+        <span>${[t.role, t.company].filter(Boolean).join(' — ')}</span>
       </footer>
     </blockquote>`
     )
@@ -140,12 +159,22 @@ function renderTestimonials() {
   const items = track.querySelectorAll('.testimonial-item');
   const dotEls = dots.querySelectorAll('.testimonial-dot');
 
+  function updateAccent(index) {
+    const photo = config.testimonials.items[index].photo;
+    accent.innerHTML = photo
+      ? `<img src="${photo}" alt="${config.testimonials.items[index].author}">`
+      : '';
+  }
+
+  updateAccent(0);
+
   function goTo(index) {
     items[current].classList.remove('active');
     dotEls[current].classList.remove('active');
     current = index;
     items[current].classList.add('active');
     dotEls[current].classList.add('active');
+    updateAccent(index);
   }
 
   document.getElementById('testimonial-prev').addEventListener('click', () => {
@@ -259,8 +288,25 @@ function populateConfigText() {
 
   document.title = config.meta.title;
   document.getElementById('hero-avatar').alt = config.hero.name;
-  document.getElementById('hero-watermark').textContent = config.hero.watermark;
-  document.getElementById('hero-watermark').style.opacity = config.hero.watermarkOpacity;
+
+  const watermark = document.getElementById('hero-watermark');
+  if (config.hero.watermark) {
+    watermark.hidden = false;
+    watermark.textContent = config.hero.watermark;
+    watermark.style.opacity = config.hero.watermarkOpacity;
+  } else {
+    watermark.hidden = true;
+  }
+
+  const tiger = document.getElementById('hero-tiger');
+  const tigerCfg = config.hero.tiger || {};
+  if (tigerCfg.enabled) {
+    tiger.hidden = false;
+    const img = document.getElementById('hero-tiger-img');
+    if (img && tigerCfg.image) img.src = tigerCfg.image;
+  } else {
+    tiger.hidden = true;
+  }
 }
 
 function openLightbox(projects) {

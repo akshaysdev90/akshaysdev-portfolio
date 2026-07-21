@@ -202,6 +202,55 @@ ul { list-style: none; }
   z-index: 1;
 }
 
+/* ---- Interactive Tiger (hero white space) ---- */
+.hero-tiger {
+  position: absolute;
+  right: clamp(2%, 6vw, 8%);
+  bottom: clamp(4%, 8vh, 12%);
+  width: clamp(240px, 34vw, 480px);
+  z-index: 0;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-drag: none;
+  will-change: transform;
+}
+
+.hero-tiger img {
+  width: 100%;
+  height: auto;
+  display: block;
+  pointer-events: none;
+  transition: transform var(--duration-normal) var(--ease-out-expo),
+              filter var(--duration-normal) var(--ease-out-expo),
+              opacity var(--duration-normal) var(--ease-out-expo);
+}
+
+.hero-tiger:hover img {
+  transform: scale(1.04);
+  filter: contrast(1.06);
+}
+
+.hero-tiger.is-dragging {
+  cursor: grabbing;
+}
+
+.hero-tiger.is-dragging img {
+  transform: scale(1.07);
+  filter: contrast(1.1);
+}
+
+/* Dark mode: soft invert so the tiger reads on dark backgrounds */
+html.dark .hero-tiger img {
+  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.92;
+}
+
+html.dark .hero-tiger:hover img,
+html.dark .hero-tiger.is-dragging img {
+  filter: invert(1) hue-rotate(180deg) contrast(1.06);
+  opacity: 1;
+}
+
 .hero-content {
   max-width: min(640px, 100%);
 }
@@ -211,8 +260,8 @@ ul { list-style: none; }
 }
 
 .avatar-frame {
-  width: var(--avatar-size);
-  height: var(--avatar-size);
+  width: clamp(180px, 24vw, 280px);
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   border-radius: var(--radius-sm);
   background: var(--color-bg-secondary);
@@ -431,6 +480,7 @@ ul { list-style: none; }
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: opacity var(--duration-slow) var(--ease-out-expo),
@@ -462,11 +512,16 @@ ul { list-style: none; }
   margin-top: var(--space-md);
   font-size: var(--text-xs);
   color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
 }
 
 .testimonial-author strong {
   color: var(--color-text-primary);
-  font-weight: 500;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  font-family: var(--font-heading);
 }
 
 .testimonial-nav {
@@ -510,6 +565,15 @@ ul { list-style: none; }
   background: var(--color-accent);
   flex-shrink: 0;
   align-self: stretch;
+  overflow: hidden;
+}
+
+.testimonial-accent img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity var(--duration-slow) var(--ease-out-expo);
 }
 
 /* ---- Brands ---- */
@@ -809,8 +873,8 @@ ul { list-style: none; }
   transform: scale(1.02);
 }
 
-/* ---- Customizer ---- */
-.customizer-toggle {
+/* ---- Day / Night Toggle ---- */
+.theme-toggle {
   position: fixed;
   bottom: calc(var(--space-md) + var(--safe-bottom));
   right: calc(var(--space-md) + var(--safe-right));
@@ -828,110 +892,36 @@ ul { list-style: none; }
               background var(--duration-fast);
 }
 
-.customizer-toggle:hover {
+.theme-toggle:hover {
   transform: scale(1.08);
   background: var(--color-accent);
 }
 
-.customizer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 300px;
-  z-index: 150;
-  background: var(--color-bg-primary);
-  box-shadow: -4px 0 30px rgba(0, 0, 0, 0.1);
-  transform: translateX(100%);
-  transition: transform var(--duration-normal) var(--ease-out-expo);
-  display: flex;
-  flex-direction: column;
+/* Show moon in day mode (click = go dark), sun in dark mode (click = go light) */
+.theme-toggle__sun { display: none; }
+.theme-toggle__moon { display: block; }
+
+html.dark .theme-toggle__sun { display: block; }
+html.dark .theme-toggle__moon { display: none; }
+
+html.dark .theme-toggle {
+  background: #F2F2F2;
+  color: #121212;
 }
 
-.customizer.open {
-  transform: translateX(0);
+html.dark .theme-toggle:hover {
+  background: var(--color-accent);
+  color: #FFFFFF;
 }
 
-.customizer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--space-md);
-  border-bottom: 1px solid var(--color-border);
+/* Dark-mode fixups for surfaces that use hardcoded light colors */
+html.dark .site-header.scrolled {
+  background: rgba(18, 18, 18, 0.92);
 }
 
-.customizer-header h3 {
-  font-family: var(--font-heading);
-  font-size: var(--text-lg);
-  font-weight: 600;
-}
-
-.customizer-close {
-  font-size: 1.5rem;
-  color: var(--color-text-muted);
-  transition: color var(--duration-fast);
-}
-
-.customizer-close:hover { color: var(--color-text-primary); }
-
-.customizer-body {
-  padding: var(--space-md);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  overflow-y: auto;
-}
-
-.customizer-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.customizer-group label {
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.customizer-group input[type="color"] {
-  width: 100%;
-  height: 36px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  padding: 2px;
-}
-
-.customizer-group select {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  font-family: var(--font-body);
-  font-size: var(--text-sm);
-  background: var(--color-bg-primary);
-}
-
-.customizer-group input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--color-accent);
-}
-
-.customizer-reset {
-  margin-top: var(--space-sm);
-  padding: 0.6rem;
-  border: 1px solid var(--color-border);
-  font-size: var(--text-xs);
-  color: var(--color-text-secondary);
-  transition: border-color var(--duration-fast), color var(--duration-fast);
-}
-
-.customizer-reset:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+body {
+  transition: background var(--duration-normal) ease,
+              color var(--duration-normal) ease;
 }
 
 /* ============================================
@@ -940,6 +930,15 @@ ul { list-style: none; }
    ============================================ */
 
 /* ---- Small phones (< 480px) ---- */
+@media (max-width: 639px) {
+  .hero-tiger {
+    width: clamp(160px, 48vw, 240px);
+    right: 2%;
+    bottom: 2%;
+    opacity: 0.85;
+  }
+}
+
 @media (max-width: 479px) {
   .hero-watermark {
     font-size: clamp(6rem, 35vw, 10rem);
@@ -996,11 +995,6 @@ ul { list-style: none; }
     min-height: 44px;
     display: flex;
     align-items: center;
-  }
-
-  .customizer {
-    width: 100%;
-    max-width: 100%;
   }
 
   .lightbox-content {
@@ -1236,6 +1230,11 @@ ul { list-style: none; }
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .hero-tiger {
+    pointer-events: none;
+    transform: none !important;
   }
 
   *, *::before, *::after {

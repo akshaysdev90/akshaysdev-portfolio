@@ -23,16 +23,17 @@ All text, projects, testimonials, brands, skills, and links live in one file:
 | `typography` | Font families |
 | `nav` | Navigation links |
 | `hero` | Name, role, tagline, watermark character |
-| `works.projects` | Project cards (title, category, image, link) |
+| `works.projects` | Project cards — `image` (grid thumbnail), `images` (lightbox gallery), `link` (opens a page on click) |
+| `testimonials.items` | Quote, `author`, `role`, `company`, optional `photo` (shown in the side panel) |
 | `works.hiddenProjects` | Extra projects revealed by "+ photos" |
 | `testimonials.items` | Client quotes |
 | `brands.list` | Brand names in the marquee |
 | `skills.tools` | Software icons and colors |
 | `footer` | CTA, motto, social links |
 
-### Live Theme Panel
+### Day / Night Mode
 
-Click the sun icon (bottom-right) to adjust accent color, backgrounds, text color, heading font, and toggle animations. Preferences persist in localStorage.
+Click the moon/sun button (bottom-right) to switch between light and dark mode. The choice persists in localStorage. Dark palette lives in `js/theme.js`.
 
 ### Images
 
@@ -54,7 +55,7 @@ SVG placeholders render automatically if images are missing.
 - Brands marquee (pauses on hover)
 - "+ photos" load-more with staggered reveal
 
-Disable all animations via the customizer or set `animation.enabled: false` in config.
+Disable all animations by setting `animation.enabled: false` in config.
 
 ## Deploy
 
@@ -75,6 +76,6 @@ Static files output to `dist/`. Deploy to Vercel, Netlify, GitHub Pages, or any 
 │   ├── config.js        # ← Edit this for content
 │   ├── main.js          # Rendering & interactions
 │   ├── animations.js    # Scroll & hover effects
-│   └── theme.js         # Live customizer
+│   └── theme.js         # Day / night mode toggle
 └── assets/              # Your images
 ```

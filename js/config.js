@@ -43,9 +43,9 @@ export const config = {
     logo: "Akshay S Dev",
     links: [
       { label: "Work", href: "#works" },
-      { label: "Contact", href: "#contact" },
-      { label: "Dribbble", href: "https://dribbble.com", external: true },
-      { label: "Behance", href: "https://behance.net", external: true },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/akshay-s-dev-4470a3165/", external: true },
+      { label: "Dribbble", href: "https://dribbble.com/akshaysdev90", external: true },
+      { label: "Resume", href: "assets/resume.pdf", download: "Akshay-S-Dev-Resume.pdf" },
     ],
   },
 
@@ -55,14 +55,26 @@ export const config = {
     tagline:
       "I craft visual narratives that blend editorial precision with experimental edge. From brand identity to motion graphics, every pixel serves a purpose.",
     avatar: "assets/avatar.svg",
-    watermark: "動",
+    watermark: "",
     watermarkOpacity: 0.06,
+    // Interactive tiger image in the hero white space.
+    // strength = how far it drifts with the cursor (0–1).
+    tiger: {
+      enabled: true,
+      image: "assets/tiger.png?v=3",
+      strength: 0.35,
+    },
   },
 
   works: {
     title: "Works",
     description:
       "A curated selection of brand, digital, and visual design projects spanning identity systems, editorial layouts, and motion experiments.",
+    // HOW TO ADD A PROJECT:
+    //   image:  thumbnail shown in the grid (drop the file in assets/)
+    //   images: optional gallery — opens in the lightbox on click
+    //   link:   optional URL (Behance, Dribbble, case study page...) —
+    //           when set, clicking the card opens this page instead
     projects: [
       {
         id: 1,
@@ -70,7 +82,8 @@ export const config = {
         category: "Brand Identity",
         description: "Visual identity system for a contemporary art gallery",
         image: "assets/project-1.jpg",
-        link: "#",
+        images: [],
+        link: "",
       },
       {
         id: 2,
@@ -78,7 +91,7 @@ export const config = {
         category: "Editorial",
         description: "Magazine layout and typographic system",
         image: "assets/project-2.jpg",
-        link: "#",
+        link: "",
       },
       {
         id: 3,
@@ -86,7 +99,7 @@ export const config = {
         category: "Motion",
         description: "Animated brand reveal and social content",
         image: "assets/project-3.jpg",
-        link: "#",
+        link: "",
       },
       {
         id: 4,
@@ -94,7 +107,7 @@ export const config = {
         category: "Digital",
         description: "UI design for a creative platform",
         image: "assets/project-4.jpg",
-        link: "#",
+        link: "",
       },
       {
         id: 5,
@@ -102,13 +115,13 @@ export const config = {
         category: "Packaging",
         description: "Sustainable packaging design concept",
         image: "assets/project-5.jpg",
-        link: "#",
+        link: "",
       },
     ],
     hiddenProjects: [
-      { id: 6, title: "Project 6", category: "Poster", image: "assets/project-6.jpg", link: "#" },
-      { id: 7, title: "Project 7", category: "Logo", image: "assets/project-7.jpg", link: "#" },
-      { id: 8, title: "Project 8", category: "Web", image: "assets/project-8.jpg", link: "#" },
+      { id: 6, title: "Project 6", category: "Poster", image: "assets/project-6.jpg", link: "" },
+      { id: 7, title: "Project 7", category: "Logo", image: "assets/project-7.jpg", link: "" },
+      { id: 8, title: "Project 8", category: "Web", image: "assets/project-8.jpg", link: "" },
     ],
     loadMoreLabel: "+ photos",
   },
@@ -116,24 +129,32 @@ export const config = {
   testimonials: {
     title: "Testimonials",
     description: "What collaborators say about working together.",
+    // Each item: quote, author (name), role (designation), company,
+    // and optional photo (shown in the side panel; red block if omitted).
     items: [
       {
         quote:
           "Akshay brings a rare combination of editorial restraint and bold experimentation. Every deliverable felt considered, never over-designed.",
-        author: "Creative Director",
+        author: "Client Name",
+        role: "Creative Director",
         company: "Studio North",
+        photo: "",
       },
       {
         quote:
           "His attention to typographic detail and visual hierarchy transformed our brand presence. A true craftsman of the digital medium.",
-        author: "Brand Manager",
+        author: "Client Name",
+        role: "Brand Manager",
         company: "Meridian Co.",
+        photo: "",
       },
       {
         quote:
           "Working with Akshay felt like a creative partnership, not a vendor relationship. He pushes boundaries while staying on brief.",
-        author: "Art Director",
+        author: "Client Name",
+        role: "Art Director",
         company: "Form & Field",
+        photo: "",
       },
     ],
   },
@@ -192,10 +213,10 @@ export const config = {
     links: [
       { label: "Adobe", href: "https://behance.net" },
       { label: "Behance", href: "https://behance.net" },
-      { label: "LinkedIn", href: "https://linkedin.com" },
+      { label: "LinkedIn", href: "https://www.linkedin.com/in/akshay-s-dev-4470a3165/" },
       { label: "Twitter", href: "https://twitter.com" },
       { label: "Instagram", href: "https://instagram.com" },
-      { label: "Dribbble", href: "https://dribbble.com" },
+      { label: "Dribbble", href: "https://dribbble.com/akshaysdev90" },
       { label: "E-mail", href: "mailto:hello@akshaysdev.com" },
     ],
   },

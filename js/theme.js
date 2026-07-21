@@ -1,101 +1,48 @@
-const STORAGE_KEY = 'portfolio-theme-overrides';
+const STORAGE_KEY = 'portfolio-color-mode';
 
-const defaults = {
-  accent: '#E8341A',
-  bgPrimary: '#FFFFFF',
-  bgSecondary: '#F2F2F2',
-  textPrimary: '#1A1A1A',
-  headingFont: "'Cormorant Garamond', Georgia, serif",
-  animations: true,
+/**
+ * Dark palette — overrides the light theme variables from config
+ * when night mode is active.
+ */
+const darkPalette = {
+  bgPrimary: '#121212',
+  bgSecondary: '#1C1C1C',
+  bgDark: '#0A0A0A',
+  textPrimary: '#F2F2F2',
+  textSecondary: '#A9A9A9',
+  textMuted: '#7A7A7A',
+  border: '#2C2C2C',
+  cardOverlay: 'rgba(0, 0, 0, 0.85)',
 };
 
-function loadOverrides() {
-  try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-  } catch {
-    return {};
-  }
-}
-
-function saveOverrides(overrides) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(overrides));
-}
-
-function applyOverrides(overrides) {
+function applyPalette(theme) {
   const root = document.documentElement;
-
-  if (overrides.accent) {
-    root.style.setProperty('--color-accent', overrides.accent);
-  }
-  if (overrides.bgPrimary) {
-    root.style.setProperty('--color-bg-primary', overrides.bgPrimary);
-  }
-  if (overrides.bgSecondary) {
-    root.style.setProperty('--color-bg-secondary', overrides.bgSecondary);
-  }
-  if (overrides.textPrimary) {
-    root.style.setProperty('--color-text-primary', overrides.textPrimary);
-  }
-  if (overrides.headingFont) {
-    root.style.setProperty('--font-heading', overrides.headingFont);
-    root.style.setProperty('--font-display', overrides.headingFont);
-  }
-  if (overrides.animations === false) {
-    document.body.classList.add('no-animations');
-  } else {
-    document.body.classList.remove('no-animations');
-  }
+  root.style.setProperty('--color-bg-primary', theme.bgPrimary);
+  root.style.setProperty('--color-bg-secondary', theme.bgSecondary);
+  root.style.setProperty('--color-bg-dark', theme.bgDark);
+  root.style.setProperty('--color-text-primary', theme.textPrimary);
+  root.style.setProperty('--color-text-secondary', theme.textSecondary);
+  root.style.setProperty('--color-text-muted', theme.textMuted);
+  root.style.setProperty('--color-border', theme.border);
+  root.style.setProperty('--color-card-overlay', theme.cardOverlay);
 }
 
 export function initTheme(config) {
-  const saved = loadOverrides();
-  applyOverrides(saved);
+  const toggle = document.getElementById('theme-toggle');
 
-  const toggle = document.getElementById('customizer-toggle');
-  const panel = document.getElementById('customizer');
-  const close = document.getElementById('customizer-close');
-
-  toggle.addEventListener('click', () => {
-    panel.classList.add('open');
-    panel.setAttribute('aria-hidden', 'false');
-  });
-
-  close.addEventListener('click', () => {
-    panel.classList.remove('open');
-    panel.setAttribute('aria-hidden', 'true');
-  });
-
-  const bindings = {
-    'accent-color': 'accent',
-    'bg-primary': 'bgPrimary',
-    'bg-secondary': 'bgSecondary',
-    'text-primary': 'textPrimary',
-    'heading-font': 'headingFont',
-    'animation-toggle': 'animations',
+  const apply = (mode) => {
+    const dark = mode === 'dark';
+    applyPalette(dark ? { ...config.theme, ...darkPalette } : config.theme);
+    document.documentElement.classList.toggle('dark', dark);
+    toggle.setAttribute('aria-label', dark ? 'Switch to day mode' : 'Switch to night mode');
   };
 
-  Object.entries(bindings).forEach(([inputId, key]) => {
-    const input = document.getElementById(inputId);
-    if (!input) return;
+  let mode = localStorage.getItem(STORAGE_KEY) || 'light';
+  apply(mode);
 
-    if (saved[key] !== undefined) {
-      if (input.type === 'checkbox') input.checked = saved[key];
-      else input.value = saved[key];
-    } else if (key === 'accent') input.value = config.theme.accent;
-    else if (key === 'bgPrimary') input.value = config.theme.bgPrimary;
-    else if (key === 'bgSecondary') input.value = config.theme.bgSecondary;
-    else if (key === 'textPrimary') input.value = config.theme.textPrimary;
-
-    input.addEventListener('input', () => {
-      const overrides = loadOverrides();
-      overrides[key] = input.type === 'checkbox' ? input.checked : input.value;
-      saveOverrides(overrides);
-      applyOverrides(overrides);
-    });
-  });
-
-  document.getElementById('customizer-reset').addEventListener('click', () => {
-    localStorage.removeItem(STORAGE_KEY);
-    location.reload();
+  toggle.addEventListener('click', () => {
+    mode = mode === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(STORAGE_KEY, mode);
+    apply(mode);
   });
 }

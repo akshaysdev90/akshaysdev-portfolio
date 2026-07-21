@@ -206,10 +206,11 @@ function renderBrands() {
 
   grid.innerHTML = config.brands.list
     .map((b, i) => {
-      const depth = (0.25 + ((i % 5) * 0.15)).toFixed(2);
+      const depth = (0.35 + ((i % 4) * 0.12)).toFixed(2);
+      const scale = b.scale ?? 1;
       return `
-      <article class="brands-cell" data-depth="${depth}" data-name="${b.name}">
-        <img class="brands-logo" src="${b.logo}" alt="${b.name}" loading="lazy" draggable="false">
+      <article class="brands-cell" data-depth="${depth}" data-name="${b.name}" style="--logo-scale: ${scale}">
+        <img class="brands-logo" src="${b.logo}" alt="${b.name}" loading="lazy" decoding="async" draggable="false">
       </article>`;
     })
     .join('');

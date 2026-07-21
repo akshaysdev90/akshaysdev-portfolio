@@ -1,3 +1,5 @@
+import { initTigerWow } from './tiger.js';
+
 export function initAnimations(config) {
   if (!config.animation.enabled) {
     document.body.classList.add('no-animations');
@@ -29,8 +31,12 @@ export function initAnimations(config) {
     initParallax(config);
     initMagneticHover();
     initCursorFollow();
-    initInteractiveTiger(config);
+    initTigerWow(config);
     initBrandsParallax();
+  } else {
+    // Still show the tiger settled when motion is reduced / touch
+    const scene = document.getElementById('hero-tiger');
+    if (scene && !scene.hidden) scene.classList.add('is-settled');
   }
 }
 
@@ -83,96 +89,6 @@ function initCursorFollow() {
   });
 }
 
-function initInteractiveTiger(config) {
-  const tiger = document.getElementById('hero-tiger');
-  const hero = document.getElementById('hero');
-  if (!tiger || !hero || tiger.hidden) return;
-
-  const strength = config.hero?.tiger?.strength ?? 0.35;
-  let targetX = 0;
-  let targetY = 0;
-  let currentX = 0;
-  let currentY = 0;
-  let dragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let dragOffsetX = 0;
-  let dragOffsetY = 0;
-  let rafId = 0;
-
-  const tick = () => {
-    currentX += (targetX - currentX) * 0.08;
-    currentY += (targetY - currentY) * 0.08;
-    tiger.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
-    rafId = requestAnimationFrame(tick);
-  };
-  rafId = requestAnimationFrame(tick);
-
-  hero.addEventListener('mousemove', (e) => {
-    if (dragging) return;
-    const rect = hero.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5;
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-    targetX = nx * 60 * strength + dragOffsetX;
-    targetY = ny * 40 * strength + dragOffsetY;
-  });
-
-  hero.addEventListener('mouseleave', () => {
-    if (!dragging) {
-      targetX = dragOffsetX;
-      targetY = dragOffsetY;
-    }
-  });
-
-  tiger.addEventListener('pointerdown', (e) => {
-    dragging = true;
-    tiger.classList.add('is-dragging');
-    tiger.setPointerCapture(e.pointerId);
-    dragStartX = e.clientX - dragOffsetX;
-    dragStartY = e.clientY - dragOffsetY;
-  });
-
-  tiger.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    dragOffsetX = e.clientX - dragStartX;
-    dragOffsetY = e.clientY - dragStartY;
-    // Keep it roughly in the hero white area
-    dragOffsetX = Math.max(-120, Math.min(160, dragOffsetX));
-    dragOffsetY = Math.max(-100, Math.min(80, dragOffsetY));
-    targetX = dragOffsetX;
-    targetY = dragOffsetY;
-  });
-
-  const endDrag = (e) => {
-    if (!dragging) return;
-    dragging = false;
-    tiger.classList.remove('is-dragging');
-    try {
-      tiger.releasePointerCapture(e.pointerId);
-    } catch (_) {}
-  };
-
-  tiger.addEventListener('pointerup', endDrag);
-  tiger.addEventListener('pointercancel', endDrag);
-
-  // Soft spring-back toward the home spot after a short delay
-  tiger.addEventListener('pointerup', () => {
-    setTimeout(() => {
-      if (dragging) return;
-      dragOffsetX *= 0.35;
-      dragOffsetY *= 0.35;
-      targetX = dragOffsetX;
-      targetY = dragOffsetY;
-    }, 1400);
-  });
-
-  window.addEventListener(
-    'beforeunload',
-    () => cancelAnimationFrame(rafId),
-    { once: true }
-  );
-}
-
 function initBrandsParallax() {
   const grid = document.getElementById('brands-grid');
   const section = document.getElementById('brands');
@@ -197,11 +113,12 @@ function initBrandsParallax() {
 
   const tick = () => {
     if (visible) {
+      // Shared vertical shift keeps logos optically aligned in each row.
+      const yShared = (mouseY - 0.5) * 10 + scrollOffset * 8;
       cells.forEach((cell) => {
         const depth = parseFloat(cell.dataset.depth) || 0.4;
-        const x = (mouseX - 0.5) * 36 * depth;
-        const y = (mouseY - 0.5) * 28 * depth + scrollOffset * depth * 18;
-        cell.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        const x = (mouseX - 0.5) * 28 * depth;
+        cell.style.transform = `translate3d(${x}px, ${yShared}px, 0)`;
       });
     }
     rafId = requestAnimationFrame(tick);

@@ -53,16 +53,20 @@ export const config = {
     name: "Akshay S Dev",
     role: "Digital Designer",
     tagline:
-      "I craft visual narratives that blend editorial precision with experimental edge. From brand identity to motion graphics, every pixel serves a purpose.",
+      "Not just a designer — a director. 4 years turning static brands into digital experiences. I build brand systems and then bring them to life in motion, with the eye of someone directing a scene, not just laying out a grid.",
     avatar: "assets/avatar.svg",
     watermark: "",
     watermarkOpacity: 0.06,
-    // Interactive tiger image in the hero white space.
-    // strength = how far it drifts with the cursor (0–1).
+    // Hero tiger wow factors:
+    // materialize = first-load particle assemble, stare = max tilt in degrees,
+    // particles = dust count (trail densifies near cursor).
     tiger: {
       enabled: true,
-      image: "assets/tiger.png?v=3",
-      strength: 0.35,
+      image: "assets/tiger.png",
+      strength: 0.3,
+      stare: 7,
+      materializeMs: 2400,
+      particles: 160,
     },
   },
 
@@ -160,15 +164,16 @@ export const config = {
     title: "Brands",
     description: "Selected collaborations and client work.",
     // Official logos in a parallax grid — swap logo paths anytime.
+    // scale = optical size relative to wordmarks (square marks need > 1).
     list: [
-      { name: "Dorling Kindersley", logo: "assets/brands/dk.svg" },
-      { name: "BCG", logo: "assets/brands/bcg.svg" },
-      { name: "McCain", logo: "assets/brands/mccain.svg" },
-      { name: "Light & Wonder", logo: "assets/brands/lightwonder.svg" },
-      { name: "Accenture", logo: "assets/brands/accenture.svg" },
-      { name: "OakNorth", logo: "assets/brands/oaknorth.svg" },
-      { name: "Chegg", logo: "assets/brands/chegg.svg" },
-      { name: "Terumo", logo: "assets/brands/terumo.svg" },
+      { name: "Dorling Kindersley", logo: "assets/brands/dk.svg", scale: 1.5 },
+      { name: "BCG", logo: "assets/brands/bcg.svg?v=2", scale: 2.05 },
+      { name: "McCain", logo: "assets/brands/mccain.svg?v=2", scale: 1.15 },
+      { name: "Light & Wonder", logo: "assets/brands/lightwonder.svg", scale: 1.1 },
+      { name: "Accenture", logo: "assets/brands/accenture.svg", scale: 1.08 },
+      { name: "OakNorth", logo: "assets/brands/oaknorth.png?v=4", scale: 1.1 },
+      { name: "Chegg", logo: "assets/brands/chegg.svg", scale: 1.12 },
+      { name: "Terumo", logo: "assets/brands/terumo.svg", scale: 1.08 },
     ],
   },
 

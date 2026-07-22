@@ -20,12 +20,20 @@ export function initAnimations(config) {
       });
     },
     {
-      threshold: window.innerWidth < 768 ? 0.08 : 0.12,
-      rootMargin: '0px 0px -20px 0px',
+      threshold: 0.05,
+      rootMargin: '0px 0px -5% 0px',
     }
   );
 
-  document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+  document.querySelectorAll('.reveal').forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    const inView = rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
+    if (inView) {
+      el.classList.add('visible');
+    } else {
+      revealObserver.observe(el);
+    }
+  });
 
   if (!isTouch && !isReducedMotion) {
     initParallax(config);

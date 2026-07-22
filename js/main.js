@@ -1,5 +1,5 @@
-import { config } from './config.js?v=26';
-import { initAnimations } from './animations.js?v=20';
+import { config } from './config.js?v=28';
+import { initAnimations } from './animations.js?v=28';
 import { initTheme } from './theme.js?v=20';
 
 function applyThemeVars() {
@@ -324,7 +324,11 @@ function populateConfigText() {
   });
 
   document.title = config.meta.title;
-  document.getElementById('hero-avatar').alt = config.hero.name;
+  const heroAvatar = document.getElementById('hero-avatar');
+  if (heroAvatar) {
+    heroAvatar.alt = config.hero.name;
+    if (config.hero.avatar) heroAvatar.src = config.hero.avatar;
+  }
 
   const watermark = document.getElementById('hero-watermark');
   if (config.hero.watermark) {
@@ -398,13 +402,32 @@ function initNav() {
   function updateLogoScale() {
     if (!logo || !hero) return;
 
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      logo.style.setProperty('--nav-logo-scale', '1');
+      return;
+    }
+
     const heroRect = hero.getBoundingClientRect();
     const heroHeight = hero.offsetHeight || 1;
-    // 0 while deep in hero; 1 once hero has fully left the viewport
+    // 0 in hero → 1 after leaving ~65% of hero
     const progress = Math.min(1, Math.max(0, -heroRect.top / (heroHeight * 0.65)));
     const eased = progress * progress * (3 - 2 * progress);
-    const scale = 1 + eased * 1.5; // 1 → 2.5
-    logo.style.setProperty('--logo-scale', scale.toFixed(3));
+    // Soften on small screens so the wordmark doesn't collide with the toggle
+    const maxScale = window.innerWidth < 768 ? 1.7 : 2.5;
+    const scale = 1 + eased * (maxScale - 1);
+    logo.style.setProperty('--nav-logo-scale', scale.toFixed(3));
+  }
+
+  let logoRaf = 0;
+  function onScrollFrame() {
+    header.classList.toggle('scrolled', window.scrollY > 40);
+    updateLogoScale();
+    logoRaf = 0;
+  }
+
+  function requestScrollUpdate() {
+    if (logoRaf) return;
+    logoRaf = requestAnimationFrame(onScrollFrame);
   }
 
   toggle.addEventListener('click', () => {
@@ -423,10 +446,7 @@ function initNav() {
     }
   });
 
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 40);
-    updateLogoScale();
-  }, { passive: true });
+  window.addEventListener('scroll', requestScrollUpdate, { passive: true });
 
   window.addEventListener('resize', () => {
     updateLogoScale();

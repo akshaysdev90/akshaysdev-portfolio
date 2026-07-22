@@ -60,7 +60,7 @@ export const config = {
     tagline:
       "Not just a designer — a director. 4 years turning static brands into digital experiences. I build brand systems and then bring them to life in motion, with the eye of someone directing a scene, not just laying out a grid.",
     cta: { label: "Selected work", href: "#works" },
-    avatar: "assets/avatar.svg",
+    avatar: "assets/avatar.jpg",
     watermark: "",
     watermarkOpacity: 0.06,
     // Hero tiger wow factors:
@@ -226,7 +226,7 @@ export const config = {
     name: "Akshay S Dev",
     copyright: "Design & Developed by Akshay S Dev",
     links: [
-      { label: "Contact me", href: "mailto:hello@akshaysdev.com", primary: true },
+      { label: "Contact me", href: "mailto:akshaysdev90@gmail.com", primary: true },
       {
         label: "Resume",
         href: "assets/resume.pdf",
@@ -241,6 +241,6 @@ export const config = {
   },
 
   contact: {
-    email: "hello@akshaysdev.com",
+    email: "akshaysdev90@gmail.com",
   },
 };

@@ -74,6 +74,12 @@ export const config = {
       materializeMs: 2400,
       particles: 160,
     },
+    // Location-based climate overlay on the hero only.
+    // force: null | "clear" | "cloudy" | "fog" | "drizzle" | "rain" | "snow" | "storm"
+    weather: {
+      enabled: true,
+      force: null,
+    },
   },
 
   works: {

@@ -1,6 +1,7 @@
-import { config } from './config.js?v=28';
+import { config } from './config.js?v=29';
 import { initAnimations } from './animations.js?v=28';
 import { initTheme } from './theme.js?v=20';
+import { initWeather } from './weather.js?v=30';
 
 function applyThemeVars() {
   const { theme, typography } = config;
@@ -481,6 +482,7 @@ function init() {
   initLightbox();
   initAnimations(config);
   initTheme(config);
+  initWeather(config);
 }
 
 document.addEventListener('DOMContentLoaded', init);

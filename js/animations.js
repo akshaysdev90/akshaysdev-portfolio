@@ -1,4 +1,4 @@
-import { initTigerWow } from './tiger.js';
+import { initTigerWow } from './tiger.js?v=20';
 
 export function initAnimations(config) {
   if (!config.animation.enabled) {

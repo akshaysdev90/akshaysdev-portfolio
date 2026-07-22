@@ -9,8 +9,8 @@ const darkPalette = {
   bgSecondary: '#1C1C1C',
   bgDark: '#0A0A0A',
   textPrimary: '#F2F2F2',
-  textSecondary: '#A9A9A9',
-  textMuted: '#7A7A7A',
+  textSecondary: '#B0B0B0',
+  textMuted: '#9A9A9A',
   border: '#2C2C2C',
   cardOverlay: 'rgba(0, 0, 0, 0.85)',
 };

@@ -1,6 +1,6 @@
-import { config } from './config.js';
-import { initAnimations } from './animations.js';
-import { initTheme } from './theme.js';
+import { config } from './config.js?v=26';
+import { initAnimations } from './animations.js?v=20';
+import { initTheme } from './theme.js?v=20';
 
 function applyThemeVars() {
   const { theme, typography } = config;
@@ -24,14 +24,19 @@ function applyThemeVars() {
 }
 
 function populateNav() {
-  const navList = document.getElementById('nav-list');
-  navList.innerHTML = config.nav.links
+  const linksHtml = config.nav.links
     .map((link) => {
-      const external = link.external ? ' target="_blank" rel="noopener"' : '';
+      const isExternal = Boolean(link.external) || link.href.startsWith('http');
+      const external = isExternal ? ' target="_blank" rel="noopener"' : '';
       const download = link.download ? ` download="${link.download}"` : '';
       return `<li><a href="${link.href}"${external}${download}>${link.label}</a></li>`;
     })
     .join('');
+
+  const desktop = document.getElementById('nav-list-desktop');
+  const mobile = document.getElementById('nav-list');
+  if (desktop) desktop.innerHTML = linksHtml;
+  if (mobile) mobile.innerHTML = linksHtml;
 }
 
 function createPlaceholderSVG(title, hue = 0) {
@@ -56,7 +61,7 @@ function renderProjects() {
   const visibleCards = projects
     .map(
       (p, i) => `
-    <article class="project-card reveal reveal-delay-${(i % 3) + 1}" data-project-id="${p.id}">
+    <article class="project-card reveal reveal-delay-${(i % 3) + 1}" data-project-id="${p.id}" tabindex="0" role="link" aria-label="${p.title}">
       <div class="project-image">
         <img src="${p.image}" alt="${p.title}" loading="lazy"
              onerror="this.src='${createPlaceholderSVG(p.title, i * 40)}'">
@@ -71,21 +76,33 @@ function renderProjects() {
     .join('');
 
   const loadMoreCard = `
-    <div class="project-card project-card--load-more reveal" id="load-more-card">
-      <button class="load-more-btn">${loadMoreLabel}</button>
+    <div class="project-card project-card--load-more reveal" id="load-more-card" tabindex="0" role="button" aria-label="${loadMoreLabel}">
+      <button class="load-more-btn" tabindex="-1">${loadMoreLabel}</button>
     </div>`;
 
   grid.innerHTML = visibleCards + loadMoreCard;
 
-  document.getElementById('load-more-card').addEventListener('click', () => {
-    loadHiddenProjects(hiddenProjects);
+  const activateLoadMore = () => loadHiddenProjects(hiddenProjects);
+  document.getElementById('load-more-card').addEventListener('click', activateLoadMore);
+  document.getElementById('load-more-card').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      activateLoadMore();
+    }
   });
 
   grid.querySelectorAll('.project-card:not(.project-card--load-more)').forEach((card) => {
-    card.addEventListener('click', () => {
+    const open = () => {
       const id = card.dataset.projectId;
       const project = [...projects, ...hiddenProjects].find((p) => String(p.id) === id);
       if (project) openProject(project);
+    };
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open();
+      }
     });
   });
 }
@@ -116,6 +133,9 @@ function loadHiddenProjects(hiddenProjects) {
     card.className = `project-card hidden-project`;
     card.style.animationDelay = `${i * 100}ms`;
     card.dataset.projectId = p.id;
+    card.tabIndex = 0;
+    card.setAttribute('role', 'link');
+    card.setAttribute('aria-label', p.title);
     card.innerHTML = `
       <div class="project-image">
         <img src="${p.image}" alt="${p.title}" loading="lazy"
@@ -125,7 +145,14 @@ function loadHiddenProjects(hiddenProjects) {
         <h3 class="project-title">${p.title}</h3>
         <p class="project-category">${p.category}</p>
       </div>`;
-    card.addEventListener('click', () => openProject(p));
+    const open = () => openProject(p);
+    card.addEventListener('click', open);
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        open();
+      }
+    });
     grid.insertBefore(card, loadMore);
   });
 
@@ -274,11 +301,15 @@ function initSeamlessMarquee(trackEl) {
   window.addEventListener('resize', trackEl._marqueeResize, { passive: true });
 }
 
+function renderFooterLink(link) {
+  const external = link.href.startsWith('http');
+  const download = link.download ? ` download="${link.download}"` : '';
+  return `<a href="${link.href}"${external ? ' target="_blank" rel="noopener"' : ''}${download}>${link.label}</a>`;
+}
+
 function renderFooter() {
   const linksEl = document.getElementById('footer-links');
-  linksEl.innerHTML = config.footer.links
-    .map((l) => `<a href="${l.href}"${l.href.startsWith('http') ? ' target="_blank" rel="noopener"' : ''}>${l.label}</a>`)
-    .join('');
+  linksEl.innerHTML = config.footer.links.map(renderFooterLink).join('');
 
   document.getElementById('footer-copy').textContent =
     `${config.footer.copyright} © ${config.meta.year}`;
@@ -313,6 +344,12 @@ function populateConfigText() {
   } else {
     tiger.hidden = true;
   }
+
+  const heroCta = document.getElementById('hero-cta');
+  if (heroCta && config.hero.cta) {
+    heroCta.textContent = config.hero.cta.label;
+    heroCta.href = config.hero.cta.href;
+  }
 }
 
 function openLightbox(projects) {
@@ -340,20 +377,38 @@ function closeLightbox() {
 
 function initNav() {
   const toggle = document.getElementById('nav-toggle');
+  const drawer = document.getElementById('nav-drawer');
   const navList = document.getElementById('nav-list');
   const overlay = document.getElementById('nav-overlay');
+  const header = document.getElementById('header');
+  const logo = document.querySelector('.logo');
+  const hero = document.getElementById('hero');
 
   function setNavOpen(open) {
+    drawer.classList.toggle('open', open);
     navList.classList.toggle('open', open);
     toggle.classList.toggle('active', open);
-    toggle.setAttribute('aria-expanded', open);
+    toggle.setAttribute('aria-expanded', String(open));
     overlay.classList.toggle('active', open);
-    overlay.setAttribute('aria-hidden', !open);
+    overlay.setAttribute('aria-hidden', String(!open));
+    drawer.setAttribute('aria-hidden', String(!open));
     document.body.classList.toggle('nav-open', open);
   }
 
+  function updateLogoScale() {
+    if (!logo || !hero) return;
+
+    const heroRect = hero.getBoundingClientRect();
+    const heroHeight = hero.offsetHeight || 1;
+    // 0 while deep in hero; 1 once hero has fully left the viewport
+    const progress = Math.min(1, Math.max(0, -heroRect.top / (heroHeight * 0.65)));
+    const eased = progress * progress * (3 - 2 * progress);
+    const scale = 1 + eased * 1.5; // 1 → 2.5
+    logo.style.setProperty('--logo-scale', scale.toFixed(3));
+  }
+
   toggle.addEventListener('click', () => {
-    setNavOpen(!navList.classList.contains('open'));
+    setNavOpen(!drawer.classList.contains('open'));
   });
 
   overlay.addEventListener('click', () => setNavOpen(false));
@@ -363,21 +418,24 @@ function initNav() {
   });
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && navList.classList.contains('open')) {
+    if (e.key === 'Escape' && drawer.classList.contains('open')) {
       setNavOpen(false);
     }
   });
 
-  const header = document.getElementById('header');
   window.addEventListener('scroll', () => {
     header.classList.toggle('scrolled', window.scrollY > 40);
+    updateLogoScale();
   }, { passive: true });
 
   window.addEventListener('resize', () => {
-    if (window.innerWidth >= 1024 && navList.classList.contains('open')) {
+    updateLogoScale();
+    if (window.innerWidth >= 1024 && drawer.classList.contains('open')) {
       setNavOpen(false);
     }
   }, { passive: true });
+
+  updateLogoScale();
 }
 
 function initLightbox() {

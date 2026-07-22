@@ -258,7 +258,7 @@ html.dark .site-header.scrolled {
   z-index: 2;
 }
 
-/* Immersive climate — CSS washes (smooth gradients) + optional particle canvas */
+/* Immersive climate — strong CSS washes + particle canvas for precip */
 .hero-climate-wash,
 .hero-climate {
   position: absolute;
@@ -266,12 +266,17 @@ html.dark .site-header.scrolled {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 3;
 }
 
 .hero-climate-wash {
-  opacity: calc(0.55 + var(--climate-intensity, 1) * 0.45);
-  transition: opacity 0.8s ease;
+  z-index: 1;
+  opacity: calc(0.72 + var(--climate-intensity, 1) * 0.28);
+  transition: opacity 0.9s ease, background 0.9s ease;
+  overflow: hidden;
+}
+
+.hero-climate {
+  z-index: 3;
 }
 
 .hero-climate-wash[hidden],
@@ -279,112 +284,227 @@ html.dark .site-header.scrolled {
   display: none !important;
 }
 
-/* ---- Clear sky: soft radial glow only (no canvas rays) ---- */
+.hero-climate-wash::before,
+.hero-climate-wash::after {
+  content: "";
+  position: absolute;
+  inset: -15% -20%;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* Hero base tint so climate reads even without looking at the glow */
+.hero[data-climate="clear"][data-climate-day="1"] {
+  background-color: #fff6eb;
+}
+
+.hero[data-climate="clear"][data-climate-day="0"] {
+  background-color: #eef1f8;
+}
+
+.hero[data-climate="cloudy"],
+.hero[data-climate="fog"] {
+  background-color: #e8ebef;
+}
+
+.hero[data-climate="rain"],
+.hero[data-climate="drizzle"],
+.hero[data-climate="storm"] {
+  background-color: #e4e9f0;
+}
+
+.hero[data-climate="snow"] {
+  background-color: #eef3f8;
+}
+
+html.dark .hero[data-climate="clear"][data-climate-day="1"] {
+  background-color: #1c1812;
+}
+
+html.dark .hero[data-climate="clear"][data-climate-day="0"] {
+  background-color: #12151c;
+}
+
+html.dark .hero[data-climate="cloudy"],
+html.dark .hero[data-climate="fog"] {
+  background-color: #151820;
+}
+
+html.dark .hero[data-climate="rain"],
+html.dark .hero[data-climate="drizzle"],
+html.dark .hero[data-climate="storm"] {
+  background-color: #12161e;
+}
+
+html.dark .hero[data-climate="snow"] {
+  background-color: #141820;
+}
+
+/* ---- Clear day: warm sky cast ---- */
 .hero[data-climate="clear"][data-climate-day="1"] .hero-climate-wash {
   background:
-    radial-gradient(ellipse 58% 48% at 78% 4%, rgba(255, 198, 110, 0.38), transparent 68%),
-    radial-gradient(ellipse 90% 70% at 88% -8%, rgba(255, 220, 170, 0.18), transparent 72%),
-    linear-gradient(160deg, rgba(255, 214, 150, 0.1) 0%, transparent 42%);
-  animation: climate-clear-day 10s ease-in-out infinite alternate;
+    radial-gradient(ellipse 75% 60% at 82% -2%, rgba(255, 176, 72, 0.62), transparent 66%),
+    radial-gradient(ellipse 95% 75% at 95% 5%, rgba(255, 210, 140, 0.4), transparent 72%),
+    linear-gradient(165deg, rgba(255, 214, 150, 0.32) 0%, rgba(255, 236, 210, 0.14) 38%, transparent 68%);
+  animation: climate-breathe 9s ease-in-out infinite alternate;
 }
 
+.hero[data-climate="clear"][data-climate-day="1"] .hero-climate-wash::before {
+  background: radial-gradient(ellipse 50% 45% at 78% 12%, rgba(255, 200, 110, 0.45), transparent 70%);
+  animation: climate-bloom 11s ease-in-out infinite alternate;
+}
+
+.hero[data-climate="clear"][data-climate-day="1"] .hero-climate-wash::after {
+  background: linear-gradient(120deg, transparent 40%, rgba(255, 220, 160, 0.18) 58%, transparent 78%);
+  animation: climate-shear 16s ease-in-out infinite alternate;
+}
+
+/* ---- Clear night: cool moonlight ---- */
 .hero[data-climate="clear"][data-climate-day="0"] .hero-climate-wash {
   background:
-    radial-gradient(ellipse 48% 42% at 82% 8%, rgba(185, 205, 255, 0.22), transparent 66%),
-    radial-gradient(ellipse 80% 60% at 70% 0%, rgba(140, 165, 220, 0.1), transparent 70%),
-    linear-gradient(180deg, rgba(120, 140, 190, 0.06), transparent 50%);
-  animation: climate-clear-night 12s ease-in-out infinite alternate;
+    radial-gradient(ellipse 55% 48% at 84% 6%, rgba(170, 195, 255, 0.48), transparent 64%),
+    radial-gradient(ellipse 90% 70% at 70% -5%, rgba(120, 150, 220, 0.22), transparent 70%),
+    linear-gradient(180deg, rgba(130, 155, 210, 0.2) 0%, rgba(160, 175, 210, 0.08) 45%, transparent 72%);
+  animation: climate-breathe 11s ease-in-out infinite alternate;
 }
 
-@keyframes climate-clear-day {
-  from { opacity: calc(0.5 + var(--climate-intensity, 1) * 0.4); }
-  to { opacity: calc(0.62 + var(--climate-intensity, 1) * 0.38); }
+.hero[data-climate="clear"][data-climate-day="0"] .hero-climate-wash::before {
+  background: radial-gradient(ellipse 40% 35% at 82% 10%, rgba(210, 225, 255, 0.35), transparent 68%);
+  animation: climate-bloom 14s ease-in-out infinite alternate;
 }
 
-@keyframes climate-clear-night {
-  from { opacity: calc(0.45 + var(--climate-intensity, 1) * 0.35); }
-  to { opacity: calc(0.58 + var(--climate-intensity, 1) * 0.4); }
-}
-
-/* ---- Cloudy / fog ---- */
+/* ---- Cloudy ---- */
 .hero[data-climate="cloudy"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(130, 140, 155, 0.34) 0%, rgba(150, 155, 165, 0.16) 42%, transparent 78%),
-    radial-gradient(ellipse 70% 40% at 30% 15%, rgba(120, 130, 145, 0.2), transparent 70%),
-    radial-gradient(ellipse 60% 35% at 75% 8%, rgba(110, 120, 135, 0.16), transparent 68%);
+    linear-gradient(180deg, rgba(110, 120, 135, 0.48) 0%, rgba(140, 148, 160, 0.28) 38%, rgba(170, 175, 185, 0.08) 78%),
+    radial-gradient(ellipse 80% 45% at 25% 8%, rgba(100, 110, 125, 0.35), transparent 68%),
+    radial-gradient(ellipse 70% 40% at 78% 0%, rgba(90, 100, 115, 0.3), transparent 65%);
 }
 
+.hero[data-climate="cloudy"] .hero-climate-wash::before {
+  background: radial-gradient(ellipse 55% 30% at 40% 20%, rgba(120, 130, 145, 0.4), transparent 70%);
+  animation: climate-drift-a 22s linear infinite;
+}
+
+.hero[data-climate="cloudy"] .hero-climate-wash::after {
+  background: radial-gradient(ellipse 60% 32% at 70% 12%, rgba(100, 110, 125, 0.32), transparent 72%);
+  animation: climate-drift-b 28s linear infinite;
+}
+
+/* ---- Fog ---- */
 .hero[data-climate="fog"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(210, 215, 220, 0.5) 0%, rgba(200, 205, 210, 0.28) 45%, rgba(220, 222, 225, 0.12) 100%),
-    radial-gradient(ellipse 90% 50% at 50% 40%, rgba(200, 205, 210, 0.25), transparent 75%);
+    linear-gradient(180deg, rgba(200, 205, 212, 0.62) 0%, rgba(210, 214, 218, 0.4) 40%, rgba(220, 222, 225, 0.22) 100%);
 }
 
-/* ---- Rain family ---- */
+.hero[data-climate="fog"] .hero-climate-wash::before {
+  background: radial-gradient(ellipse 100% 55% at 50% 55%, rgba(215, 218, 222, 0.55), transparent 75%);
+  animation: climate-drift-a 30s linear infinite;
+}
+
+.hero[data-climate="fog"] .hero-climate-wash::after {
+  background: radial-gradient(ellipse 90% 50% at 60% 70%, rgba(200, 205, 210, 0.4), transparent 70%);
+  animation: climate-drift-b 36s linear infinite;
+}
+
+/* ---- Rain / drizzle ---- */
 .hero[data-climate="rain"] .hero-climate-wash,
 .hero[data-climate="drizzle"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(120, 140, 165, 0.28) 0%, rgba(140, 155, 175, 0.1) 55%, transparent 85%);
+    linear-gradient(180deg, rgba(95, 115, 145, 0.42) 0%, rgba(120, 140, 165, 0.22) 45%, rgba(150, 160, 175, 0.08) 85%);
+}
+
+.hero[data-climate="rain"] .hero-climate-wash::before,
+.hero[data-climate="drizzle"] .hero-climate-wash::before {
+  background: radial-gradient(ellipse 80% 40% at 50% 0%, rgba(80, 100, 130, 0.28), transparent 70%);
+  animation: climate-breathe 8s ease-in-out infinite alternate;
 }
 
 .hero[data-climate="storm"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(70, 80, 105, 0.4) 0%, rgba(90, 100, 120, 0.16) 60%, transparent 90%);
+    linear-gradient(180deg, rgba(55, 65, 95, 0.55) 0%, rgba(75, 85, 110, 0.28) 50%, rgba(90, 100, 120, 0.1) 90%);
 }
 
 .hero[data-climate="storm"] .hero-climate-wash.is-flashing {
-  animation: climate-storm-flash 0.35s ease-out;
-}
-
-@keyframes climate-storm-flash {
-  0% { filter: brightness(1); }
-  30% { filter: brightness(1.45); background-color: rgba(255, 255, 255, 0.18); }
-  100% { filter: brightness(1); }
+  animation: climate-storm-flash 0.4s ease-out;
 }
 
 .hero[data-climate="snow"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(200, 215, 235, 0.32) 0%, rgba(210, 220, 235, 0.1) 55%, transparent 85%);
+    linear-gradient(180deg, rgba(175, 195, 220, 0.45) 0%, rgba(200, 215, 235, 0.2) 50%, transparent 85%);
+}
+
+@keyframes climate-breathe {
+  from { opacity: calc(0.7 + var(--climate-intensity, 1) * 0.2); }
+  to { opacity: calc(0.88 + var(--climate-intensity, 1) * 0.12); }
+}
+
+@keyframes climate-bloom {
+  from { transform: scale(1) translate(0, 0); opacity: 0.75; }
+  to { transform: scale(1.12) translate(-2%, 3%); opacity: 1; }
+}
+
+@keyframes climate-shear {
+  from { transform: translateX(-4%) rotate(-1deg); opacity: 0.55; }
+  to { transform: translateX(5%) rotate(1deg); opacity: 0.9; }
+}
+
+@keyframes climate-drift-a {
+  from { transform: translateX(-8%); }
+  to { transform: translateX(10%); }
+}
+
+@keyframes climate-drift-b {
+  from { transform: translateX(6%); }
+  to { transform: translateX(-12%); }
+}
+
+@keyframes climate-storm-flash {
+  0% { filter: brightness(1); }
+  25% { filter: brightness(1.55); background-color: rgba(255, 255, 255, 0.22); }
+  100% { filter: brightness(1); }
 }
 
 /* Dark mode washes */
 html.dark .hero[data-climate="clear"][data-climate-day="1"] .hero-climate-wash {
   background:
-    radial-gradient(ellipse 58% 48% at 78% 4%, rgba(255, 210, 140, 0.2), transparent 68%),
-    radial-gradient(ellipse 90% 70% at 88% -8%, rgba(255, 200, 130, 0.1), transparent 72%);
+    radial-gradient(ellipse 75% 60% at 82% -2%, rgba(255, 190, 100, 0.38), transparent 66%),
+    radial-gradient(ellipse 95% 75% at 95% 5%, rgba(255, 170, 80, 0.2), transparent 72%),
+    linear-gradient(165deg, rgba(255, 180, 90, 0.16) 0%, transparent 55%);
 }
 
 html.dark .hero[data-climate="clear"][data-climate-day="0"] .hero-climate-wash {
   background:
-    radial-gradient(ellipse 48% 42% at 82% 8%, rgba(160, 185, 255, 0.16), transparent 66%),
-    radial-gradient(ellipse 80% 60% at 70% 0%, rgba(100, 130, 200, 0.08), transparent 70%);
+    radial-gradient(ellipse 55% 48% at 84% 6%, rgba(150, 180, 255, 0.32), transparent 64%),
+    radial-gradient(ellipse 90% 70% at 70% -5%, rgba(90, 120, 200, 0.16), transparent 70%),
+    linear-gradient(180deg, rgba(80, 110, 180, 0.14) 0%, transparent 60%);
 }
 
 html.dark .hero[data-climate="cloudy"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(70, 80, 100, 0.48) 0%, rgba(50, 58, 72, 0.22) 50%, transparent 80%),
-    radial-gradient(ellipse 70% 40% at 30% 15%, rgba(60, 70, 90, 0.28), transparent 70%);
+    linear-gradient(180deg, rgba(60, 70, 90, 0.62) 0%, rgba(45, 52, 68, 0.35) 45%, transparent 85%),
+    radial-gradient(ellipse 80% 45% at 25% 8%, rgba(50, 60, 80, 0.4), transparent 68%);
 }
 
 html.dark .hero[data-climate="fog"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(170, 180, 195, 0.28) 0%, rgba(140, 150, 165, 0.16) 55%, transparent 100%);
+    linear-gradient(180deg, rgba(150, 160, 175, 0.35) 0%, rgba(120, 130, 150, 0.2) 55%, transparent 100%);
 }
 
 html.dark .hero[data-climate="rain"] .hero-climate-wash,
 html.dark .hero[data-climate="drizzle"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(50, 65, 95, 0.42) 0%, rgba(40, 50, 70, 0.16) 60%, transparent 90%);
+    linear-gradient(180deg, rgba(40, 55, 85, 0.55) 0%, rgba(35, 45, 65, 0.28) 55%, transparent 90%);
 }
 
 html.dark .hero[data-climate="storm"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(35, 40, 65, 0.55) 0%, rgba(25, 30, 50, 0.22) 65%, transparent 95%);
+    linear-gradient(180deg, rgba(30, 35, 60, 0.7) 0%, rgba(20, 25, 45, 0.35) 60%, transparent 95%);
 }
 
 html.dark .hero[data-climate="snow"] .hero-climate-wash {
   background:
-    linear-gradient(180deg, rgba(90, 110, 140, 0.36) 0%, rgba(60, 75, 100, 0.12) 55%, transparent 85%);
+    linear-gradient(180deg, rgba(80, 100, 140, 0.48) 0%, rgba(50, 65, 95, 0.2) 55%, transparent 85%);
 }
 
 /* ---- Interactive tiger (hero white space) ---- */

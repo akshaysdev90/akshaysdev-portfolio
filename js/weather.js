@@ -323,11 +323,11 @@ function spawnParticle(kind, w, h, randomY, intensity) {
     return {
       x,
       y,
-      r: (2 + Math.random() * 4.5) * (0.85 + i * 0.25),
-      vy: (0.45 + Math.random() * 0.9) * (0.85 + i * 0.3),
-      vx: -0.5 + Math.random() * 1,
+      r: (2.4 + Math.random() * 5.2) * (0.9 + i * 0.3),
+      vy: (0.5 + Math.random() * 1.05) * (0.9 + i * 0.35),
+      vx: -0.55 + Math.random() * 1.1,
       wobble: Math.random() * Math.PI * 2,
-      alpha: (0.5 + Math.random() * 0.4) * (0.75 + i * 0.25),
+      alpha: (0.62 + Math.random() * 0.35) * (0.85 + i * 0.2),
     };
   }
 
@@ -336,29 +336,29 @@ function spawnParticle(kind, w, h, randomY, intensity) {
   return {
     x,
     y,
-    len: (isDrizzle ? 10 + Math.random() * 12 : 16 + Math.random() * 22) * (0.9 + i * 0.15),
+    len: (isDrizzle ? 12 + Math.random() * 14 : 20 + Math.random() * 28) * (0.95 + i * 0.2),
     vy: isStorm
-      ? 5.5 + Math.random() * 4
+      ? 6.2 + Math.random() * 4.5
       : isDrizzle
-        ? 1.4 + Math.random() * 1.4
-        : 2.0 + Math.random() * 2.2,
-    vx: isStorm ? 1.6 + Math.random() * 1.8 : 0.25 + Math.random() * 0.45,
-    width: (isDrizzle ? 1.1 : isStorm ? 1.8 : 1.45) * (0.9 + i * 0.15),
-    alpha: (isDrizzle ? 0.35 + Math.random() * 0.25 : 0.45 + Math.random() * 0.35)
-      * (0.75 + i * 0.3),
+        ? 1.7 + Math.random() * 1.6
+        : 2.6 + Math.random() * 2.6,
+    vx: isStorm ? 1.8 + Math.random() * 2 : 0.35 + Math.random() * 0.55,
+    width: (isDrizzle ? 1.35 : isStorm ? 2.15 : 1.75) * (0.95 + i * 0.2),
+    alpha: (isDrizzle ? 0.48 + Math.random() * 0.28 : 0.58 + Math.random() * 0.35)
+      * (0.85 + i * 0.25),
   };
 }
 
 function particleCount(kind, area, intensity) {
-  const density = Math.min(1.6, Math.max(0.7, area / (1280 * 720)));
+  const density = Math.min(1.8, Math.max(0.85, area / (1280 * 720)));
   const base = {
-    drizzle: 120,
-    rain: 160,
-    snow: 90,
-    storm: 220,
+    drizzle: 200,
+    rain: 280,
+    snow: 150,
+    storm: 360,
   }[kind];
   if (!base) return 0;
-  return Math.round(base * density * (0.55 + intensity * 0.7));
+  return Math.round(base * density * (0.7 + intensity * 0.65));
 }
 
 /** Canvas particles only — atmosphere is CSS gradients on .hero-climate-wash */

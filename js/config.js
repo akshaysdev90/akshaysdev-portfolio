@@ -120,8 +120,8 @@ export const config = {
       {
         id: 4,
         title: "Project 4",
-        category: "Digital",
-        description: "UI design for a creative platform",
+        category: "Typography",
+        description: "Self made new font set",
         image: "assets/project-4.jpg",
         link: "",
       },

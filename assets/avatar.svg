@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240">
+  <defs>
+    <pattern id="checker" width="20" height="20" patternUnits="userSpaceOnUse">
+      <rect fill="#E8E8E8" width="10" height="10"/>
+      <rect fill="#D0D0D0" x="10" y="10" width="10" height="10"/>
+      <rect fill="#D0D0D0" x="0" y="10" width="10" height="10"/>
+      <rect fill="#E8E8E8" x="10" y="0" width="10" height="10"/>
+    </pattern>
+  </defs>
+  <rect fill="url(#checker)" width="240" height="240"/>
+  <circle cx="120" cy="90" r="40" fill="#C4C4C4" opacity="0.5"/>
+  <ellipse cx="120" cy="190" rx="60" ry="45" fill="#C4C4C4" opacity="0.5"/>
+</svg>

@@ -1,0 +1,8 @@
+# Static portfolio — publish the repo root (no build step required).
+[build]
+  command = "echo 'Static site; skipping build'"
+  publish = "."
+
+# Don’t treat Vite’s outDir as the site if someone sets it in the UI.
+[build.environment]
+  NODE_VERSION = "20"

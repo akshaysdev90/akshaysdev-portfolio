@@ -1,6 +1,6 @@
 # Akshay S Dev — Portfolio
 
-A minimalist, editorial portfolio website for graphic & visual design work. Built to match your layout with config-driven content, live theme customization, and subtle scroll interactions.
+A minimalist, visual, digital & brand designer portfolio website for graphic & visual design work. Built to match your layout with config-driven content, live theme customization, and subtle scroll interactions.
 
 ## Quick Start
 

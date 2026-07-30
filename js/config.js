@@ -76,9 +76,11 @@ export const config = {
     },
     // Location-based climate overlay on the hero only.
     // force: null | "clear" | "cloudy" | "fog" | "drizzle" | "rain" | "snow" | "storm"
+    // defaultCoords: last-resort lat/lon when GPS + IP both fail
     weather: {
       enabled: true,
       force: null,
+      defaultCoords: null,
     },
   },
 
@@ -86,20 +88,66 @@ export const config = {
     title: "Works",
     description:
       "A curated selection of brand, digital, and visual design projects spanning identity systems, editorial layouts, and motion experiments.",
-    // HOW TO ADD A PROJECT:
-    //   image:  thumbnail shown in the grid (drop the file in assets/)
-    //   images: optional gallery — opens in the lightbox on click
-    //   link:   optional URL (Behance, Dribbble, case study page...) —
-    //           when set, clicking the card opens this page instead
+    /*
+     * ═══════════════════════════════════════════════════════════
+     *  HOW TO ADD / EDIT A PROJECT (easy template)
+     * ═══════════════════════════════════════════════════════════
+     *
+     *  1. Drop images in /assets/ (e.g. assets/projects/my-project/)
+     *  2. Copy a project object below and fill the fields
+     *  3. Open project → shows the full case study viewer
+     *
+     *  Reel card fields:
+     *    title, category, description, image  → preview in Works
+     *    link  → if set to a real URL, opens that instead of the viewer
+     *
+     *  caseStudy (the full project page):
+     *    about     → left column story / what the project is
+     *    role, duration, roleType, team, year, client → right column facts
+     *    cover     → big banner between title and overview (also Works reel thumb)
+     *    sections[] — add as many as you want, each with:
+     *      title   → section heading (optional)
+     *      text    → intro paragraph(s). Use \n\n for new paragraphs
+     *      points  → bullet list: ["item"] or [{ title, text }]
+     *      stats   → side metrics: [{ value, label, text }]
+     *      images  → ["path.jpg"] or [{ src, caption }]
+     *
+     *  Tip: leave caseStudy out and the viewer still opens with
+     *  your cover image + description as a simple project page.
+     */
     projects: [
       {
         id: 1,
         title: "Project 1",
-        category: "Brand Identity",
-        description: "Visual identity system for a contemporary art gallery",
+        category: "Branding",
+        description: "Brand identity system and visual language",
         image: "assets/project-1.jpg",
-        images: [],
         link: "",
+        caseStudy: {
+          year: "2024",
+          role: "Brand Designer",
+          client: "Studio sample",
+          cover: "assets/project-1.jpg",
+          intro:
+            "A full brand identity built from a single mark — type, color, and applications designed to feel editorial and confident.",
+          sections: [
+            {
+              title: "The challenge",
+              text: "The brand needed a system that could move from print to digital without losing warmth.\n\nWe started with constraints: one accent, two type families, and a mark that works at 16px.",
+              images: ["assets/project-1.jpg"],
+            },
+            {
+              title: "Process",
+              text: "Sketches → digital mark → type pairing → applications. Each step cut noise until the voice felt inevitable.",
+              images: ["assets/project-1.jpg", "assets/project-1.jpg"],
+            },
+            {
+              title: "Outcome",
+              text: "A compact identity kit: logo suite, color tokens, and sample layouts ready for real use.",
+              images: [],
+            },
+          ],
+        },
       },
       {
         id: 2,
@@ -108,38 +156,377 @@ export const config = {
         description: "Magazine layout and typographic system",
         image: "assets/project-2.jpg",
         link: "",
+        caseStudy: {
+          year: "2024",
+          role: "Editorial Designer",
+          client: "",
+          cover: "assets/project-2.jpg",
+          intro: "A magazine system focused on hierarchy, rhythm, and readable long-form pages.",
+          sections: [
+            {
+              title: "Overview",
+              text: "Replace this text with your story. Add more paragraphs with a blank line between them.",
+              images: ["assets/project-2.jpg"],
+            },
+            {
+              title: "Gallery",
+              text: "Drop more images into the images array below — one path per picture.",
+              images: ["assets/project-2.jpg"],
+            },
+          ],
+        },
       },
       {
         id: 3,
-        title: "Project 3",
+        title: "BeatRoute Saas Video Design",
         category: "Motion",
-        description: "Animated brand reveal and social content",
-        image: "assets/project-3.jpg",
+        description: "SaaS explainer video — art direction and storyboard",
+        image: "assets/projects/project-3-cover.jpg?v=141",
+        imagePosition: "left center",
         link: "",
+        caseStudy: {
+          year: "2026",
+          role: "Art Direction, Storyboard Artist, Graphic Designer",
+          team: "Akshay S Dev, Anil, Sandipa Halder",
+          client: "",
+          cover: "assets/projects/project-3-cover.jpg?v=141",
+          coverPosition: "left center",
+          about:
+            "BeatRoute is the world's only Goal-Driven AI platform for retail sales and distribution — an enterprise-grade, scalable system that uses Goal-Driven AI to deliver measurable business impact for brands across their retail sales and distribution channels.\n\nWorldwide, retail and distribution businesses in FMCG, consumer goods, and building materials often face a difficult choice: invest in risky, costly custom development, or settle for tools that fall short. BeatRoute addresses this with a ready-to-deploy enterprise SaaS AI solution.\n\nToday, BeatRoute serves 200+ enterprise brands across 20+ countries, with 100K+ users in India, South Asia, and Africa spanning 10 industry verticals.",
+          downloads: [
+            {
+              label: "Download storyboard page 1",
+              href: "assets/projects/BeatRoute-Africa-Storyboard-Page-1.jpg",
+              download: "BeatRoute-Africa-Storyboard-Page-1.jpg",
+            },
+            {
+              label: "Download storyboard page 2",
+              href: "assets/projects/BeatRoute-Africa-Storyboard-Page-2.jpg",
+              download: "BeatRoute-Africa-Storyboard-Page-2.jpg",
+            },
+          ],
+          sections: [
+            {
+              title: "Problem",
+              text: "For years, BeatRoute lacked a dedicated brand promo it could share with stakeholders, new clients, and marketing teams. Whenever the design team proposed one, the work stalled without clear art direction — and the ideas never reached production. When I joined the team the previous year, closing that gap became a major priority.",
+              images: [],
+            },
+            {
+              title: "Behind the Scene",
+              text: "The following is the approved final storyboard, finalized through three iterative review cycles before being handed to the motion designer. The preparation process involved supplying hand-drawn rough sketches alongside a detailed, screen-by-screen breakdown to Claude, ensuring precise alignment between the creative intent and the production-ready storyboard — minimizing miscommunication during handoff.",
+              galleryLayout: "pager",
+              images: [
+                {
+                  src: "assets/projects/BeatRoute-Africa-Storyboard-Page-1.jpg?v=138",
+                  caption: "Storyboard sheet — page 1 of 2 (frames 01–04)",
+                  download: "BeatRoute-Africa-Storyboard-Page-1.jpg",
+                },
+                {
+                  src: "assets/projects/BeatRoute-Africa-Storyboard-Page-2.jpg?v=138",
+                  caption: "Storyboard sheet — page 2 of 2 (frames 05–08)",
+                  download: "BeatRoute-Africa-Storyboard-Page-2.jpg",
+                },
+              ],
+            },
+            {
+              title: "Final Result",
+              text: "",
+              video: {
+                src: "https://www.youtube.com/watch?v=NMo1RHhN5sc",
+                caption: "BeatRoute Africa explainer",
+              },
+            },
+            {
+              title: "Takeaway",
+              text: "After introducing the SaaS video explainer, BeatRoute saw clear gains in sales performance, brand presence, and pipeline quality across digital channels.",
+              stats: [
+                {
+                  value: "60%",
+                  label: "Sales growth",
+                  text: "Increase in software sales following the explainer launch.",
+                },
+                {
+                  value: "70%",
+                  label: "Brand visibility",
+                  text: "Rise in brand visibility across digital platforms.",
+                },
+                {
+                  value: "24%",
+                  label: "Lead growth",
+                  text: "Quarterly increase in lead count after release.",
+                },
+              ],
+              images: [],
+            },
+          ],
+        },
       },
       {
         id: 4,
-        title: "Project 4",
+        title: "In Love",
         category: "Typography",
-        description: "Self made new font set",
-        image: "assets/project-4.jpg",
+        description: "A font inspired by love",
+        image: "assets/projects/project-4-cover.jpg",
         link: "",
+        caseStudy: {
+          year: "2026",
+          role: "Type Designer",
+          client: "",
+          cover: "assets/projects/project-4-cover.jpg",
+          about: "A font inspired by love.",
+          downloads: [
+            {
+              label: "Download In Love (.otf)",
+              href: "assets/fonts/In-Love.otf",
+              download: "In-Love.otf",
+            },
+          ],
+          sections: [
+            {
+              title: "Character Display Sheet",
+              text: "",
+              images: [
+                {
+                  src: "assets/projects/project-4-charset.jpg?v=126",
+                  caption: "Full character set — uppercase, lowercase, figures, and punctuation",
+                  aspect: "auto",
+                  span: "full",
+                },
+              ],
+            },
+            {
+              title: "Final Display",
+              text: "",
+              images: [
+                {
+                  src: "assets/projects/project-4-poster.jpg?v=127",
+                  caption: "Editorial poster",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-4-can.jpg?v=127",
+                  caption: "Packaging application",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-4-sign.jpg?v=127",
+                  caption: "Outdoor signage",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-4-tote.jpg?v=127",
+                  caption: "Merchandise",
+                  aspect: "auto",
+                },
+              ],
+            },
+          ],
+        },
       },
       {
         id: 5,
-        title: "Project 5",
+        title: "Club Noize",
+        category: "Logo",
+        description: "Nightlife brand identity for Gen Z and young millennials",
+        image: "assets/projects/project-5-cover.png",
+        link: "",
+        caseStudy: {
+          year: "2026",
+          role: "Logo Designer",
+          client: "",
+          cover: "assets/projects/project-5-cover.png",
+          about:
+            "A nightlife/social club targeting Gen Z and young millennials, built around three pillars: music/dance, connection, and self-expression.",
+          sections: [
+            {
+              title: "Target audience",
+              text: "18–28 year-olds who see going out as identity and community, not just entertainment. Digital-native, values authenticity over polish, active on Instagram/TikTok.",
+              images: [],
+            },
+            {
+              title: "Brand personality",
+              text: "Energetic, inclusive, a little rebellious — more \"collective\" than \"venue.\" Should feel like a scene, not a business.",
+              images: [],
+            },
+            {
+              title: "Logo Conceptualisation",
+              text: "The design process began with a clear intention: the logo needed to embody the vibe and culture of the space through its form alone. My starting point was the idea of noise — energetic, contemporary, and youthful. This led me to the phrase \"We had a blast!\", a popular Gen Z expression that captured exactly the tone I was after.\n\nThe word \"Blast\" became my anchor. Artistically, it evoked fun, controlled chaos, and energetic noise — qualities I wanted the mark to communicate instantly. My first exploration translated this into an abstract crown form, but it didn't fully deliver on that intent.\n\nReturning to the brainstorming stage, I developed the concept further by treating each letter of \"NOIZE\" as an individual arm-like element, which became the structural foundation of the logo. This gave the mark more energy and identity, but it still felt incomplete.\n\nTo ground the concept and reflect the idea of space, I introduced a house silhouette nested within the \"blast\" form — tying the energetic exterior to a sense of place and belonging. From there, the design went through several rounds of iteration and simplification, refining proportions and details until it resolved into the final logo.",
+              images: [
+                {
+                  src: "assets/projects/project-5-concepts.jpg?v=116",
+                  caption: "Early mark explorations — twelve directions around noise, blast, and nightlife energy",
+                },
+              ],
+            },
+            {
+              title: "Final Result",
+              text: "",
+              galleryLayout: "mosaic",
+              images: [
+                {
+                  src: "assets/projects/project-5-logo.jpg?v=119",
+                  caption: "Primary mark",
+                  presentation: "mark",
+                  col: 1,
+                  row: 1,
+                },
+                {
+                  src: "assets/projects/project-5-access.jpg?v=117",
+                  caption: "Access card",
+                  aspect: "auto",
+                  col: 2,
+                  row: 1,
+                  rowSpan: 2,
+                },
+                {
+                  src: "assets/projects/project-5-cards.jpg?v=117",
+                  caption: "Business cards",
+                  aspect: "auto",
+                  col: 1,
+                  row: 2,
+                },
+                {
+                  src: "assets/projects/project-5-final.jpg?v=117",
+                  caption: "In context",
+                  aspect: "cover",
+                  col: 1,
+                  row: 3,
+                },
+                {
+                  src: "assets/projects/project-5-icon.jpg?v=117",
+                  caption: "App icon",
+                  aspect: "auto",
+                  col: 2,
+                  row: 3,
+                },
+              ],
+            },
+          ],
+        },
+      },
+      {
+        id: 6,
+        title: "Project 6",
         category: "Packaging",
         description: "Sustainable packaging design concept",
-        image: "assets/project-5.jpg",
+        image: "assets/project-6.jpg",
         link: "",
+        caseStudy: {
+          year: "2022",
+          role: "Packaging Designer",
+          client: "",
+          cover: "assets/project-6.jpg",
+          intro: "Packaging that feels tactile, honest, and easy to produce.",
+          sections: [
+            {
+              title: "Overview",
+              text: "Add packaging story and dielines here.",
+              images: ["assets/project-6.jpg"],
+            },
+          ],
+        },
+      },
+      {
+        id: 7,
+        title: "Docze App: The Doctor Appointment App",
+        category: "UI Design",
+        description: "Interface design for a digital product",
+        image: "assets/projects/project-7-cover.png",
+        link: "",
+        caseStudy: {
+          year: "2025",
+          role: "UI Designer",
+          duration: "DEC 2024 - JAN 2025 (2 months)",
+          roleType: "Part-Time",
+          team: "Shivam Pandey, Akshay S Dev, Bhuphendra Rana, Jitendra Kirar",
+          client: "",
+          cover: "assets/projects/project-7-cover.png",
+          about:
+            "Docze is a doctor appointment app based in Luxembourg, designed to address the inefficiencies in healthcare accessibility. By connecting patients with medical professionals through a streamlined platform, Docze simplifies the process of finding, scheduling, and managing healthcare appointments.",
+          sections: [
+            {
+              title: "Objective",
+              text: "Patients in Luxembourg faced challenges in booking doctor appointments. These hurdles often led to delays in receiving timely medical care.",
+              points: [
+                "Limited visibility into doctor availability",
+                "Long waiting times for appointments",
+                "No centralized platform for healthcare scheduling",
+              ],
+              images: [],
+            },
+            {
+              title: "The Solution",
+              text: "Docze provides a comprehensive, user-friendly app that bridges the gap between patients and healthcare providers. The platform offers:",
+              points: [
+                {
+                  title: "Real-Time Availability",
+                  text: "Patients can view and book available slots instantly.",
+                },
+                {
+                  title: "Doctor Profiles",
+                  text: "Detailed profiles with qualifications, specialities, and reviews.",
+                },
+                {
+                  title: "Appointment Management",
+                  text: "Easy rescheduling and cancellation options.",
+                },
+                {
+                  title: "Reminders & Notifications",
+                  text: "Automated alerts to reduce no-shows and ensure timely visits.",
+                },
+              ],
+              images: [
+                {
+                  src: "assets/projects/project-7-home.png",
+                  caption: "Home — booking, specialties, nearby doctors",
+                },
+                {
+                  src: "assets/projects/project-7-find-doctor.png",
+                  caption: "Find Doctor — location-aware discovery",
+                },
+              ],
+            },
+            {
+              title: "Results",
+              text: "Since its launch, Docze has achieved measurable improvements for patients and clinics alike.",
+              stats: [
+                {
+                  value: "40%",
+                  label: "Faster scheduling",
+                  text: "Reduction in appointment scheduling time for patients and doctors.",
+                },
+                {
+                  value: "90%",
+                  label: "Positive experiences",
+                  text: "Users reported a positive experience with the app.",
+                },
+                {
+                  value: "↓",
+                  label: "Fewer no-shows",
+                  text: "Clinics saw better schedule management and fewer missed visits.",
+                },
+              ],
+              images: [],
+            },
+            {
+              title: "Key Takeaways",
+              text: "Docze’s success highlights the importance of user-centred design and technological innovation in solving real-world problems. By addressing accessibility and efficiency, Docze has redefined healthcare management in Luxembourg.",
+              images: [],
+            },
+          ],
+        },
       },
     ],
-    hiddenProjects: [
-      { id: 6, title: "Project 6", category: "Poster", image: "assets/project-6.jpg", link: "" },
-      { id: 7, title: "Project 7", category: "Logo", image: "assets/project-7.jpg", link: "" },
-      { id: 8, title: "Project 8", category: "Web", image: "assets/project-8.jpg", link: "" },
-    ],
+    hiddenProjects: [],
     loadMoreLabel: "+ photos",
+  },
+
+  fortune: {
+    idleLabel: "Click the machine to draw a fortune",
+    spinLabel: "Drawing your fortune…",
+    readyLabel: "Your fortune is ready",
+    // Optional custom slips are drawn first (no repeats), then the 1e15 generative library.
+    fortunes: [],
   },
 
   testimonials: {

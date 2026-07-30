@@ -37,7 +37,6 @@ export function initAnimations(config) {
 
   if (!isTouch && !isReducedMotion) {
     initParallax(config);
-    initMagneticHover();
     initCursorFollow();
     initTigerWow(config);
     initBrandsParallax();
@@ -64,26 +63,7 @@ function initParallax(config) {
   );
 }
 
-function initMagneticHover() {
-  const cards = document.querySelectorAll('.project-card:not(.project-card--load-more)');
-
-  cards.forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      const img = card.querySelector('.project-image img');
-      if (img) {
-        img.style.transform = `scale(1.05) translate(${x * 0.02}px, ${y * 0.02}px)`;
-      }
-    });
-
-    card.addEventListener('mouseleave', () => {
-      const img = card.querySelector('.project-image img');
-      if (img) img.style.transform = '';
-    });
-  });
-}
+/** Works interactions live in works-reel.js */
 
 function initCursorFollow() {
   const accent = document.querySelector('.testimonial-accent');

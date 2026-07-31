@@ -151,27 +151,50 @@ export const config = {
       },
       {
         id: 2,
-        title: "Project 2",
+        title: "Brush, byte & Beyond Magazine",
         category: "Editorial",
-        description: "Magazine layout and typographic system",
-        image: "assets/project-2.jpg",
+        description: "Editorial monograph on Asian art & culture — layout and cover system",
+        image: "assets/projects/project-2-cover.jpg?v=153",
+        imagePosition: "center center",
         link: "",
         caseStudy: {
           year: "2024",
           role: "Editorial Designer",
           client: "",
-          cover: "assets/project-2.jpg",
-          intro: "A magazine system focused on hierarchy, rhythm, and readable long-form pages.",
+          cover: "assets/projects/project-2-cover.jpg?v=153",
+          coverPosition: "center center",
+          about:
+            "Brush, byte & Beyond is an editorial monograph exploring the evolution of Asian art and culture — from ancient civilizations to the age of artificial intelligence. The system prioritizes hierarchy, rhythm, and readable long-form pages.",
           sections: [
             {
-              title: "Overview",
-              text: "Replace this text with your story. Add more paragraphs with a blank line between them.",
-              images: ["assets/project-2.jpg"],
-            },
-            {
-              title: "Gallery",
-              text: "Drop more images into the images array below — one path per picture.",
-              images: ["assets/project-2.jpg"],
+              title: "Final Layouting n Looks",
+              text: "Issue 01 settles into a quiet grid — generous margins, clear hierarchy, and spreads that let type and image breathe.",
+              images: [
+                {
+                  src: "assets/projects/project-2-contents.jpg?v=154",
+                  caption: "Cover with contents spread",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-2-spread-01.jpg?v=154",
+                  caption: "Opening feature — The Ancient Foundation",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-2-spread-02.jpg?v=154",
+                  caption: "Interior pages 02–03",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-2-handheld.jpg?v=154",
+                  caption: "Cover in hand",
+                  aspect: "auto",
+                  size: "md",
+                },
+              ],
             },
           ],
         },

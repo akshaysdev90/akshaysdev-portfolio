@@ -1,4 +1,4 @@
-import { config } from './config.js?v=154';
+import { config } from './config.js?v=165';
 import { initAnimations } from './animations.js?v=30';
 import { initTheme } from './theme.js?v=20';
 import { initWeather } from './weather.js?v=129';

@@ -429,22 +429,117 @@ export const config = {
       },
       {
         id: 6,
-        title: "Project 6",
+        title: "AQUA cosmetics",
         category: "Packaging",
-        description: "Sustainable packaging design concept",
-        image: "assets/project-6.jpg",
+        description: "Designing language for package system",
+        image: "assets/projects/project-6-cover.jpg?v=155",
+        imagePosition: "center center",
         link: "",
         caseStudy: {
-          year: "2022",
+          year: "2023",
           role: "Packaging Designer",
           client: "",
-          cover: "assets/project-6.jpg",
-          intro: "Packaging that feels tactile, honest, and easy to produce.",
+          cover: "assets/projects/project-6-cover.jpg?v=155",
+          coverPosition: "center center",
+          about:
+            "Aqua Cosmetics is a contemporary beauty brand committed to creating high-quality skincare and cosmetic products that blend innovation, performance, and elegance. Driven by a passion for excellence, the brand focuses on developing safe, effective, and thoughtfully formulated products that cater to the evolving needs of modern consumers.\n\nAqua Cosmetics believes that premium beauty should be both accessible and reliable, delivering products that enhance confidence while promoting healthy skin. Designed for university students and working corporate women, the brand offers clean, functional, and sophisticated beauty solutions that seamlessly integrate into fast-paced, everyday lifestyles.",
           sections: [
             {
-              title: "Overview",
-              text: "Add packaging story and dielines here.",
-              images: ["assets/project-6.jpg"],
+              title: "Problem Statement",
+              text: "The cosmetic market is highly saturated, making it difficult for new brands to establish a distinct visual identity. Many skincare products rely on similar packaging styles, resulting in poor shelf differentiation and weak brand recognition. Additionally, excessive design elements and unclear information often overwhelm consumers, making it difficult to quickly understand a product's purpose, benefits, and ingredients.\n\nThe challenge was to design a packaging system that communicates quality, trust, and premium value while remaining clean, functional, and visually memorable for university students and working corporate women.",
+              images: [],
+            },
+            {
+              title: "Solution",
+              text: "To address the challenge of standing out in a saturated cosmetics market, the packaging strategy focused on creating immediate visual impact while maintaining clarity and simplicity. A carefully selected color palette was used to capture consumer attention within the first few seconds of interaction, leveraging color psychology to increase shelf visibility and strengthen product recognition. Once attention is captured, the minimal and straightforward layout enables customers to quickly identify the product, its key benefits, and essential information without unnecessary visual clutter.\n\nThis balance between bold visual attraction and clean communication creates a premium brand experience, enhances consumer trust, and supports faster purchasing decisions. The result is a packaging system that is memorable, modern, and highly effective for Aqua Cosmetics' target audience of university students and working corporate women.",
+              images: [],
+            },
+            {
+              title: "Label Design",
+              text: "The bottle label was designed as a quiet companion to the outer carton — clear hierarchy for product name, variant, and essential details without crowding the form. Typography stays restrained so the brand mark and key claims remain readable at a glance, while the label layout mirrors the carton system for a cohesive unboxing experience.",
+              images: [
+                {
+                  src: "assets/projects/project-6-label-moisturizer.jpg?v=162",
+                  caption: "Vitamin B5 moisturizer",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-6-label-sunscreen.jpg?v=162",
+                  caption: "SPF 50 sunscreen",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-6-label-argan.jpg?v=162",
+                  caption: "Moroccan argan oil",
+                  aspect: "auto",
+                },
+                {
+                  src: "assets/projects/project-6-label-bodywash.jpg?v=162",
+                  caption: "Multi vitamin bodywash",
+                  aspect: "auto",
+                },
+              ],
+            },
+            {
+              title: "Key Design Strategy",
+              text: "This approach follows a core marketing principle: capture attention first, communicate value second, and build trust through simplicity.",
+              points: [
+                {
+                  title: "Attention First",
+                  text: "Vibrant, strategically chosen colors increase shelf visibility and attract customers instantly.",
+                },
+                {
+                  title: "Clarity Second",
+                  text: "Minimal typography and a clean layout make product information easy to read and understand.",
+                },
+                {
+                  title: "Brand Recognition",
+                  text: "A consistent visual system strengthens recall across the entire product range.",
+                },
+                {
+                  title: "Premium Appeal",
+                  text: "Simple, elegant design communicates quality and builds consumer trust.",
+                },
+                {
+                  title: "Material Quality",
+                  text: "A high-quality cardboard outer cover reinforces the premium feel, while the carton color reflects the bottle color so product and packaging feel like one system.",
+                },
+                {
+                  title: "Purchase Confidence",
+                  text: "Clear messaging and intuitive packaging help customers make quicker buying decisions.",
+                },
+              ],
+              images: [],
+            },
+            {
+              title: "Product Images",
+              text: "",
+              images: [
+                {
+                  src: "assets/projects/project-6-product-trio.jpg?v=164",
+                  caption: "Core range — sunscreen, body wash, moisturizer",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-6-product-carton.jpg?v=164",
+                  caption: "Vitamin C serum outer carton",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-6-product-lineup.jpg?v=164",
+                  caption: "Full lineup across formats",
+                  aspect: "auto",
+                  span: "full",
+                },
+                {
+                  src: "assets/projects/project-6-product-range.jpg?v=164",
+                  caption: "Color system across the range",
+                  aspect: "auto",
+                  span: "full",
+                },
+              ],
             },
           ],
         },

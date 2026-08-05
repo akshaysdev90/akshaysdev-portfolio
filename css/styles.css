@@ -2386,6 +2386,22 @@ body.project-viewer-open {
   -ms-interpolation-mode: bicubic;
 }
 
+.project-viewer__spread--board {
+  max-width: min(100%, 34rem);
+}
+
+.project-viewer__spread--board .project-viewer__frame--auto {
+  background: var(--color-bg-secondary);
+}
+
+.project-viewer__spread--board .project-viewer__frame--auto img {
+  width: 100%;
+  height: auto;
+  max-height: min(68vh, 28rem);
+  object-fit: contain;
+  object-position: center top;
+}
+
 .project-viewer__spread--sm {
   max-width: min(100%, 18rem);
 }

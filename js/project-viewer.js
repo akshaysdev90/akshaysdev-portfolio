@@ -315,6 +315,7 @@ function renderGallery(images, projectTitle, galleryLayout = '') {
         chunk.length === 1 && chunk[0]?.size === 'sm' ? 'project-viewer__spread--sm' : '',
         chunk.length === 1 && chunk[0]?.size === 'md' ? 'project-viewer__spread--md' : '',
         chunk.length === 1 && chunk[0]?.size === 'lg' ? 'project-viewer__spread--lg' : '',
+        chunk.length === 1 && chunk[0]?.size === 'board' ? 'project-viewer__spread--board' : '',
       ]
         .filter(Boolean)
         .join(' ');

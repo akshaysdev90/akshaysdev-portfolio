@@ -1,10 +1,10 @@
-import { config } from './config.js?v=165';
+import { config } from './config.js?v=170';
 import { initAnimations } from './animations.js?v=30';
 import { initTheme } from './theme.js?v=20';
 import { initWeather } from './weather.js?v=129';
 import { initWorksReel } from './works-reel.js?v=141';
 import { initOmikuji } from './omikuji.js?v=152';
-import { initProjectViewer } from './project-viewer.js?v=141';
+import { initProjectViewer } from './project-viewer.js?v=168';
 
 let projectViewer = { open() {}, close() {} };
 
@@ -29,14 +29,22 @@ function applyThemeVars() {
   root.style.setProperty('--reveal-duration', `${config.animation.revealDuration}ms`);
 }
 
+function renderActionLink(link) {
+  const href = link.href || '#';
+  const isPdf = /\.pdf(?:$|\?)/i.test(href);
+  const isExternal =
+    Boolean(link.external) || isPdf || href.startsWith('http') || href.startsWith('mailto:');
+  const external = isExternal ? ' target="_blank" rel="noopener"' : '';
+  // PDFs open for viewing; skip the download attribute so the browser can show them inline.
+  // Visitors can still save from the PDF viewer (filename comes from the file path).
+  const download =
+    !isPdf && link.download ? ` download="${link.download}"` : '';
+  return `<a href="${href}"${external}${download}>${link.label}</a>`;
+}
+
 function populateNav() {
   const linksHtml = config.nav.links
-    .map((link) => {
-      const isExternal = Boolean(link.external) || link.href.startsWith('http');
-      const external = isExternal ? ' target="_blank" rel="noopener"' : '';
-      const download = link.download ? ` download="${link.download}"` : '';
-      return `<li><a href="${link.href}"${external}${download}>${link.label}</a></li>`;
-    })
+    .map((link) => `<li>${renderActionLink(link)}</li>`)
     .join('');
 
   const desktop = document.getElementById('nav-list-desktop');
@@ -236,9 +244,7 @@ function initSeamlessMarquee(trackEl) {
 }
 
 function renderFooterLink(link) {
-  const external = link.href.startsWith('http');
-  const download = link.download ? ` download="${link.download}"` : '';
-  return `<a href="${link.href}"${external ? ' target="_blank" rel="noopener"' : ''}${download}>${link.label}</a>`;
+  return renderActionLink(link);
 }
 
 function renderFooter() {

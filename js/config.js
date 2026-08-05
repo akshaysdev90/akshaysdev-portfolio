@@ -47,8 +47,9 @@ export const config = {
       { label: "Dribbble", href: "https://dribbble.com/akshaysdev90", external: true },
       {
         label: "Resume",
-        href: "assets/resume.pdf",
-        download: "Akshay-S-Dev-Resume.pdf",
+        href: "assets/Akshay-S-Dev-Designer-Resume-2026.pdf",
+        download: "Akshay-S-Dev-Designer-Resume-2026.pdf",
+        external: true,
         primary: true,
       },
     ],
@@ -118,33 +119,110 @@ export const config = {
     projects: [
       {
         id: 1,
-        title: "Project 1",
+        title: "The Story Haven",
         category: "Branding",
-        description: "Brand identity system and visual language",
-        image: "assets/project-1.jpg",
+        description: "Brand identity for a bookstore — find your next adventure",
+        image: "assets/projects/project-1-cover.jpg?v=166",
+        imagePosition: "center center",
         link: "",
         caseStudy: {
           year: "2024",
           role: "Brand Designer",
-          client: "Studio sample",
-          cover: "assets/project-1.jpg",
-          intro:
-            "A full brand identity built from a single mark — type, color, and applications designed to feel editorial and confident.",
+          client: "",
+          cover: "assets/projects/project-1-cover.jpg?v=166",
+          coverPosition: "center center",
+          about:
+            "The Story Haven is a vibrant, modern bookstore that serves as a community sanctuary for readers of all ages. Located in a busy urban area, it offers more than just books — a creative space for learning and connection.\n\nWhile designing for The Story Haven, the focus stayed minimalist and user-centric: energetic and vibrant as a brand, with a premium yet mystic touch that invites people to find their next adventure.",
           sections: [
             {
-              title: "The challenge",
-              text: "The brand needed a system that could move from print to digital without losing warmth.\n\nWe started with constraints: one accent, two type families, and a mark that works at 16px.",
-              images: ["assets/project-1.jpg"],
-            },
-            {
-              title: "Process",
-              text: "Sketches → digital mark → type pairing → applications. Each step cut noise until the voice felt inevitable.",
-              images: ["assets/project-1.jpg", "assets/project-1.jpg"],
-            },
-            {
-              title: "Outcome",
-              text: "A compact identity kit: logo suite, color tokens, and sample layouts ready for real use.",
-              images: [],
+              title: "Brand Story",
+              text: "From mark and type to color, collateral, and outdoor campaigns — a system built to feel cozy, urban, simple, and vibrant.",
+              images: [
+                {
+                  src: "assets/projects/project-1-story-01-about.jpg?v=168",
+                  caption: "About — brand introduction",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-02-briefing.jpg?v=168",
+                  caption: "Design briefing & ideology",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-03-logo.jpg?v=168",
+                  caption: "Primary logo",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-04-logo-theory.jpg?v=168",
+                  caption: "Logo construction",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-05-type.jpg?v=168",
+                  caption: "Typography system",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-06-color.jpg?v=168",
+                  caption: "Color palette",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-07-mood.jpg?v=168",
+                  caption: "Mood — warm, fresh, cozy",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-08-cards.jpg?v=168",
+                  caption: "Business cards & brand words",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-09-mobile.jpg?v=168",
+                  caption: "Mobile experience",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-10-totes.jpg?v=168",
+                  caption: "Tote applications",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-11-stickers.jpg?v=168",
+                  caption: "Stickers & campaign graphics",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-12-billboard.jpg?v=168",
+                  caption: "Outdoor billboard",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-13-collab.jpg?v=168",
+                  caption: "Transit & collaborate graphics",
+                  aspect: "auto",
+                  size: "board",
+                },
+                {
+                  src: "assets/projects/project-1-story-14-posters.jpg?v=168",
+                  caption: "Poster series",
+                  aspect: "auto",
+                  size: "board",
+                },
+              ],
             },
           ],
         },
@@ -655,23 +733,23 @@ export const config = {
     items: [
       {
         quote:
-          "Akshay brings a rare combination of editorial restraint and bold experimentation. Every deliverable felt considered, never over-designed.",
-        role: "Creative Director",
-        company: "Studio North",
+          "Working with Akshay is super fun — a man with multidisciplinary design skills and great ideas. Give him a stage and he can surpass many designers out there.",
+        role: "Managing Director",
+        company: "Cherry Hill Interiors Pvt Ltd",
         photo: "",
       },
       {
         quote:
-          "His attention to typographic detail and visual hierarchy transformed our brand presence. A true craftsman of the digital medium.",
-        role: "Brand Manager",
-        company: "Meridian Co.",
+          "A developer working with us was friends with Akshay, and that’s how we connected with him. To be honest, he really helped us with UI design and even UX. UX wasn’t his duty, but he took ownership himself and helped us reach our founding UI interface design.",
+        role: "CEO",
+        company: "Docze",
         photo: "",
       },
       {
         quote:
-          "Working with Akshay felt like a creative partnership, not a vendor relationship. He pushes boundaries while staying on brief.",
-        role: "Art Director",
-        company: "Form & Field",
+          "Working with Akshay is super easy. He sits with you and explains each and every frame — like a movie director explaining to the cast. He’s so detail-oriented; I learned a lot from him.",
+        role: "Video Editor",
+        company: "BeatRoute",
         photo: "",
       },
     ],
@@ -740,8 +818,9 @@ export const config = {
       { label: "Contact me", href: "mailto:akshaysdev90@gmail.com", primary: true },
       {
         label: "Resume",
-        href: "assets/resume.pdf",
-        download: "Akshay-S-Dev-Resume.pdf",
+        href: "assets/Akshay-S-Dev-Designer-Resume-2026.pdf",
+        download: "Akshay-S-Dev-Designer-Resume-2026.pdf",
+        external: true,
         primary: true,
       },
       { label: "LinkedIn", href: "https://www.linkedin.com/in/akshay-s-dev-4470a3165/" },

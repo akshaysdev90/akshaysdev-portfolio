@@ -7,9 +7,9 @@
   <meta name="description" content="Graphic & visual designer portfolio. Experiments first. Ego later.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/variables.css?v=46">
-  <link rel="stylesheet" href="css/styles.css?v=46">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Noto+Serif+JP:wght@500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/variables.css?v=151">
+  <link rel="stylesheet" href="css/styles.css?v=176">
 </head>
 <body>
   <a class="skip-link" href="#works">Skip to work</a>
@@ -56,16 +56,159 @@
     </div>
   </section>
 
-  <!-- Works -->
+  <!-- Works — cinematic reel -->
   <section class="works section section--gray" id="works">
-    <div class="container">
-      <div class="section-header reveal">
-        <h2 class="section-title" data-config="works.title">Works</h2>
-        <p class="section-desc" data-config="works.description"></p>
+    <div class="works-runway">
+      <div class="works-sticky">
+        <div class="container works-sticky__inner">
+          <div class="section-header works-header reveal">
+            <h2 class="section-title" data-config="works.title">Works</h2>
+            <p class="section-desc" data-config="works.description"></p>
+          </div>
+
+          <div class="works-reel reveal" id="works-reel" data-active="0">
+            <div class="works-reel__frame" tabindex="0" role="button" aria-label="Open selected project">
+              <div class="works-reel__media" aria-hidden="true"></div>
+              <div class="works-reel__blade" aria-hidden="true"></div>
+              <div class="works-reel__lens" aria-hidden="true"></div>
+              <div class="works-reel__grain" aria-hidden="true"></div>
+              <div class="works-reel__hud">
+                <span class="works-reel__num">01</span>
+                <button type="button" class="works-reel__open">Open project →</button>
+              </div>
+            </div>
+
+            <div class="works-reel__side">
+              <p class="works-reel__hint">Scroll to scrub · Hover to preview</p>
+              <div class="works-reel__rail" role="listbox" aria-label="Projects"></div>
+            </div>
+
+            <div class="works-reel__copy">
+              <p class="works-reel__cat">Branding</p>
+              <h3 class="works-reel__title">Project 1</h3>
+            </div>
+
+            <p class="works-reel__desc">Brand identity system and visual language</p>
+
+            <div class="works-reel__progress" aria-hidden="true">
+              <div class="works-reel__progress-bar"></div>
+            </div>
+
+            <div class="works-omikuji" id="works-omikuji">
+              <div class="omikuji-stage">
+                <img
+                  class="omikuji-guardian omikuji-guardian--left"
+                  src="assets/omikuji-tiger.png?v=81"
+                  alt=""
+                  draggable="false"
+                  aria-hidden="true"
+                />
+
+                <div class="omikuji-machine" id="omikuji-machine" tabindex="0" role="button" aria-label="Draw a fortune. Click or press Enter.">
+                  <div class="omikuji-machine__body">
+                    <div class="omikuji-crown" aria-hidden="true">
+                      <div class="omikuji-roof"></div>
+                      <div class="omikuji-neon">
+                        <span class="omikuji-neon__jp">開運</span>
+                        <span class="omikuji-neon__en">FORTUNE SLIP</span>
+                        <span class="omikuji-neon__jp">開運</span>
+                      </div>
+                    </div>
+
+                    <div class="omikuji-sign" aria-hidden="true">
+                      <span class="omikuji-sign__roman">O - mi - ku - ji</span>
+                      <span class="omikuji-sign__jp">おみくじ</span>
+                    </div>
+
+                    <div class="omikuji-ties" aria-hidden="true">
+                      <span></span><span></span><span></span><span></span><span></span>
+                      <span></span><span></span><span></span><span></span><span></span>
+                    </div>
+
+                    <div class="omikuji-cabinet">
+                      <div class="omikuji-bezel">
+                        <div class="omikuji-glass">
+                          <img
+                            class="omikuji-glass__art"
+                            src="assets/omikuji-display.png"
+                            alt=""
+                            draggable="false"
+                          />
+                          <div class="omikuji-glass__shine" aria-hidden="true"></div>
+                        </div>
+                      </div>
+
+                      <div class="omikuji-controls" aria-hidden="true">
+                        <div class="omikuji-speaker"></div>
+                        <div class="omikuji-chute">
+                          <span class="omikuji-chute__well">
+                            <span class="omikuji-chute__label">Pick up here</span>
+                            <span class="omikuji-chute__jp">贈りもの</span>
+                            <span class="omikuji-chute__slip"></span>
+                          </span>
+                        </div>
+                        <div class="omikuji-coin">
+                          <span class="omikuji-coin__housing">
+                            <span class="omikuji-coin__slot"></span>
+                          </span>
+                          <span class="omikuji-coin__piece"></span>
+                          <span class="omikuji-coin__label">Insert Coin</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <img
+                  class="omikuji-guardian omikuji-guardian--right"
+                  src="assets/omikuji-tiger.png?v=81"
+                  alt=""
+                  draggable="false"
+                  aria-hidden="true"
+                />
+              </div>
+
+              <button type="button" class="omikuji-cta" data-omikuji-draw>Draw a fortune</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="works-grid" id="works-grid"></div>
     </div>
   </section>
+
+  <div class="omikuji-backdrop" id="omikuji-backdrop" hidden aria-hidden="true"></div>
+  <div
+    class="omikuji-slip"
+    id="omikuji-slip"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="omikuji-slip-title"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="omikuji-slip__paper">
+      <div class="omikuji-slip__magic" aria-hidden="true">
+        <img
+          class="omikuji-slip__ring"
+          src="assets/omikuji-magic-ring.png?v=84"
+          alt=""
+          draggable="false"
+        />
+        <span class="omikuji-slip__glow"></span>
+      </div>
+
+      <div class="omikuji-slip__reveal">
+        <p class="omikuji-slip__rank" data-slip-rank>吉</p>
+        <p class="omikuji-slip__rank-en" data-slip-rank-en>Good Luck</p>
+        <h3 class="omikuji-slip__title" id="omikuji-slip-title" data-slip-title></h3>
+        <p class="omikuji-slip__body" data-slip-body></p>
+        <div class="omikuji-slip__actions">
+          <button type="button" class="omikuji-slip__again" data-slip-again>Draw again</button>
+          <button type="button" class="omikuji-slip__close" data-slip-close>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Testimonials -->
   <section class="testimonials section" id="testimonials">
@@ -116,6 +259,32 @@
     </div>
   </section>
 
+  <!-- AI tools promotion -->
+  <section class="tools-promo section section--gray" id="ai-tools" hidden>
+    <div class="container">
+      <div class="section-header section-header--lined reveal">
+        <h2 class="section-title" data-tools-promo-title>AI Tools</h2>
+        <p class="section-desc" data-tools-promo-desc>AI tools designed &amp; developed by Akshay S Dev.</p>
+      </div>
+      <p class="tools-promo__eyebrow reveal" data-tools-promo-eyebrow>Featured free download</p>
+      <div class="tools-promo__layout reveal">
+        <div class="tools-promo__product">
+          <a class="tools-promo__ad" data-tools-promo-link aria-label="Download Scafo free">
+            <img data-tools-promo-image alt="Scafo — Font pairing and scaling made easy" width="1024" height="1024" decoding="async" loading="lazy">
+          </a>
+        </div>
+        <div class="tools-promo__shots-block">
+          <p class="tools-promo__shots-label" data-tools-promo-shots-label>Plugin screenshots</p>
+          <ul class="tools-promo__shots" data-tools-promo-shots></ul>
+        </div>
+      </div>
+      <div class="tools-promo__stage tools-promo__stage--footer">
+        <p class="tools-promo__pitch reveal" data-tools-promo-pitch></p>
+        <a class="tools-promo__cta reveal" data-tools-promo-cta>Download Scafo (.zip)</a>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer section" id="contact">
     <div class="container">
@@ -138,6 +307,25 @@
     <div class="lightbox-content" id="lightbox-content"></div>
   </div>
 
+  <!-- Full project case study viewer -->
+  <div
+    class="project-viewer"
+    id="project-viewer"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="project-viewer-title"
+    aria-hidden="true"
+    hidden
+  >
+    <div class="project-viewer__bar">
+      <a href="#" class="logo project-viewer__logo" data-config="nav.logo" data-project-home>Akshay S Dev</a>
+      <button type="button" class="project-viewer__close" data-project-close>Close</button>
+    </div>
+    <div class="project-viewer__scroll">
+      <article class="project-viewer__article container" data-project-article></article>
+    </div>
+  </div>
+
   <!-- Day / Night Toggle -->
   <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode" title="Day / Night mode">
     <svg class="theme-toggle__sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -148,6 +336,6 @@
     </svg>
   </button>
 
-  <script type="module" src="js/main.js?v=46"></script>
+  <script type="module" src="js/main.js?v=175"></script>
 </body>
 </html>

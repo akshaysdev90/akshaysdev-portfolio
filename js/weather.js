@@ -1,10 +1,10 @@
 /**
  * Location-aware hero climate.
- * GPS (when allowed) → IP fallback → Open-Meteo current conditions.
+ * GPS (fast + accurate) → parallel IP providers → optional defaults → Open-Meteo.
  * Cache is only a fast first paint; live weather always revalidates.
  */
 
-const WEATHER_CACHE_KEY = 'portfolio-climate-v6';
+const WEATHER_CACHE_KEY = 'portfolio-climate-v7';
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 function clamp(n, min, max) {
@@ -148,6 +148,7 @@ function clearLegacyCaches() {
       'portfolio-climate-v3',
       'portfolio-climate-v4',
       'portfolio-climate-v5',
+      'portfolio-climate-v6',
     ].forEach((key) => localStorage.removeItem(key));
   } catch {
     /* ignore */
@@ -166,6 +167,10 @@ function getGpsPosition(options) {
       resolve(null);
       return;
     }
+    if (typeof window.isSecureContext === 'boolean' && !window.isSecureContext) {
+      resolve(null);
+      return;
+    }
     navigator.geolocation.getCurrentPosition(
       (pos) =>
         resolve({
@@ -174,9 +179,21 @@ function getGpsPosition(options) {
           accuracy: pos.coords.accuracy,
           source: 'gps',
         }),
-      () => resolve(null),
+      (err) => {
+        console.debug('[climate] GPS unavailable:', err?.code, err?.message);
+        resolve(null);
+      },
       options
     );
+  });
+}
+
+function gpsOrFail(promise) {
+  return promise.then((coords) => {
+    if (!coords || !Number.isFinite(coords.lat) || !Number.isFinite(coords.lon)) {
+      throw new Error('gps-null');
+    }
+    return coords;
   });
 }
 
@@ -193,6 +210,17 @@ async function getIpPosition() {
       };
     },
     async () => {
+      const res = await fetchWithTimeout('https://ipwho.is/', 4500);
+      if (!res.ok) throw new Error('ipwho');
+      const data = await res.json();
+      if (data.success === false) throw new Error('ipwho-error');
+      return {
+        lat: parseFloat(data.latitude),
+        lon: parseFloat(data.longitude),
+        source: 'ip-ipwho',
+      };
+    },
+    async () => {
       const res = await fetchWithTimeout('https://ipapi.co/json/', 4500);
       if (!res.ok) throw new Error('ipapi');
       const data = await res.json();
@@ -203,42 +231,89 @@ async function getIpPosition() {
         source: 'ip-ipapi',
       };
     },
+    async () => {
+      const res = await fetchWithTimeout('https://api.ip.sb/geoip', 4500);
+      if (!res.ok) throw new Error('ipsb');
+      const data = await res.json();
+      return {
+        lat: parseFloat(data.latitude),
+        lon: parseFloat(data.longitude),
+        source: 'ip-ipsb',
+      };
+    },
   ];
 
-  for (const provider of providers) {
-    try {
-      const coords = await provider();
-      if (Number.isFinite(coords.lat) && Number.isFinite(coords.lon)) return coords;
-    } catch {
-      /* next */
-    }
-  }
-  return null;
+  const settled = await Promise.all(
+    providers.map((provider) =>
+      provider()
+        .then((coords) =>
+          Number.isFinite(coords?.lat) && Number.isFinite(coords?.lon) ? coords : null
+        )
+        .catch((err) => {
+          console.debug('[climate] IP provider failed:', err?.message || err);
+          return null;
+        })
+    )
+  );
+
+  return settled.find(Boolean) || null;
 }
 
 /**
- * Fast IP first (no permission prompt), GPS preferred when it arrives.
+ * Prefer GPS (fast + accurate in parallel). Fall back to every IP provider,
+ * then optional config defaults. Returns coords and a pending GPS upgrade promise.
  */
-async function resolveCoords() {
-  const gpsPromise = getGpsPosition({
-    enableHighAccuracy: true,
+async function resolveCoords(defaults = null) {
+  const gpsFastP = getGpsPosition({
+    enableHighAccuracy: false,
     timeout: 8000,
-    maximumAge: 60_000,
+    maximumAge: 5 * 60 * 1000,
   });
+  const gpsAccurateP = getGpsPosition({
+    enableHighAccuracy: true,
+    timeout: 20000,
+    maximumAge: 0,
+  });
+  const anyGpsP = Promise.any([gpsOrFail(gpsFastP), gpsOrFail(gpsAccurateP)]).catch(
+    () => null
+  );
+  const ipP = getIpPosition();
 
-  // Don't block forever on GPS — race a short wait against IP
+  // Give GPS a fair window before accepting IP
   const gpsQuick = await Promise.race([
-    gpsPromise,
-    new Promise((resolve) => setTimeout(() => resolve(null), 2200)),
+    anyGpsP,
+    new Promise((resolve) => setTimeout(() => resolve(null), 5000)),
   ]);
-  if (gpsQuick) return gpsQuick;
+  if (gpsQuick) {
+    console.debug('[climate] location via', gpsQuick.source, gpsQuick.lat, gpsQuick.lon);
+    return { coords: gpsQuick, gpsUpgrade: Promise.resolve(null) };
+  }
 
-  const ip = await getIpPosition();
-  if (ip) return ip;
+  const ip = await ipP;
+  if (ip) {
+    console.debug('[climate] location via', ip.source, ip.lat, ip.lon);
+    return { coords: ip, gpsUpgrade: anyGpsP };
+  }
 
-  // Last chance: late GPS
-  const gpsLate = await gpsPromise;
-  if (gpsLate) return gpsLate;
+  const gpsLate = await anyGpsP;
+  if (gpsLate) {
+    console.debug('[climate] location via late', gpsLate.source, gpsLate.lat, gpsLate.lon);
+    return { coords: gpsLate, gpsUpgrade: Promise.resolve(null) };
+  }
+
+  if (
+    defaults
+    && Number.isFinite(Number(defaults.lat))
+    && Number.isFinite(Number(defaults.lon))
+  ) {
+    const fallback = {
+      lat: Number(defaults.lat),
+      lon: Number(defaults.lon),
+      source: 'default',
+    };
+    console.debug('[climate] location via default', fallback.lat, fallback.lon);
+    return { coords: fallback, gpsUpgrade: anyGpsP };
+  }
 
   throw new Error('Unable to resolve location');
 }
@@ -646,12 +721,7 @@ export async function initWeather(config) {
 
   clearLegacyCaches();
 
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    if (canvas) canvas.hidden = true;
-    if (wash) wash.hidden = true;
-    return;
-  }
-
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let stopEffect = null;
   let applied = null;
 
@@ -675,13 +745,24 @@ export async function initWeather(config) {
     if (canvas) canvas.setAttribute('data-climate', kind);
 
     if (stopEffect) stopEffect();
-    stopEffect = startEffect(canvas, wash, kind, intensity);
+    if (reducedMotion) {
+      if (canvas) canvas.hidden = true;
+      stopEffect = null;
+    } else {
+      stopEffect = startEffect(canvas, wash, kind, intensity);
+    }
     applied = climate;
   };
 
   const forced = weatherCfg.force;
   if (forced) {
-    applyClimate({ kind: forced, intensity: 1, isDay: true, source: 'force' });
+    applyClimate({
+      kind: forced,
+      intensity: 1,
+      isDay: true,
+      geoSource: 'force',
+      source: 'force',
+    });
     return;
   }
 
@@ -689,54 +770,55 @@ export async function initWeather(config) {
   const cached = readCache();
   if (cached) applyClimate({ ...cached, source: 'cache' });
 
-  // 2) Always fetch live — cache is never the final word
-  try {
-    const coords = await resolveCoords();
+  const applyFromCoords = async (coords, sourceLabel) => {
+    if (!coords) return null;
     const live = await buildClimatePayload(coords);
     writeCache(live);
-
-    if (!applied || climatesDiffer(applied, live)) {
-      applyClimate({ ...live, source: 'live' });
+    if (!applied || climatesDiffer(applied, live) || applied.geoSource !== live.geoSource) {
+      applyClimate({ ...live, source: sourceLabel || 'live' });
     } else {
-      // Same climate — still refresh metadata / intensity gently
-      applyClimate({ ...live, source: 'live' });
+      applied = { ...live, source: sourceLabel || 'live' };
+      if (live.geoSource) hero.dataset.climateSource = live.geoSource;
     }
+    return live;
+  };
 
-    // 3) If first paint used IP, upgrade to GPS when permission arrives
-    if (String(live.geoSource || '').startsWith('ip')) {
-      void getGpsPosition({
-        enableHighAccuracy: true,
-        timeout: 12000,
-        maximumAge: 0,
-      }).then(async (gps) => {
+  // 2) Always fetch live — GPS preferred, then IP, then config defaults
+  try {
+    const { coords, gpsUpgrade } = await resolveCoords(weatherCfg.defaultCoords || null);
+    await applyFromCoords(coords, 'live');
+
+    // 3) Upgrade to GPS when it arrives after an IP/default first paint
+    if (
+      gpsUpgrade
+      && (String(coords.source || '').startsWith('ip') || coords.source === 'default')
+    ) {
+      void gpsUpgrade.then(async (gps) => {
         if (!gps) return;
         if (
-          Number.isFinite(live.lat)
-          && Number.isFinite(live.lon)
-          && haversineKm(live.lat, live.lon, gps.lat, gps.lon) < 8
+          Number.isFinite(coords.lat)
+          && Number.isFinite(coords.lon)
+          && haversineKm(coords.lat, coords.lon, gps.lat, gps.lon) < 3
         ) {
-          return; // same weather cell
+          hero.dataset.climateSource = 'gps';
+          return;
         }
         try {
-          const refined = await buildClimatePayload(gps);
-          writeCache(refined);
-          if (climatesDiffer(applied, refined)) {
-            applyClimate({ ...refined, source: 'gps' });
-          }
-        } catch {
-          /* keep live */
+          await applyFromCoords(gps, 'gps');
+        } catch (err) {
+          console.debug('[climate] GPS refine failed:', err);
         }
       });
     }
   } catch (err) {
     console.warn('Climate effects unavailable:', err);
-    // If we never painted, show a calm cloudy fallback so the system still "works"
     if (!applied) {
       applyClimate({
         kind: 'cloudy',
         intensity: 0.55,
         isDay: true,
         code: 2,
+        geoSource: 'fallback',
         source: 'fallback',
       });
     }

@@ -1,7 +1,12 @@
-import { config } from './config.js?v=46';
-import { initAnimations } from './animations.js?v=28';
+import { config } from './config.js?v=175';
+import { initAnimations } from './animations.js?v=30';
 import { initTheme } from './theme.js?v=20';
-import { initWeather } from './weather.js?v=46';
+import { initWeather } from './weather.js?v=129';
+import { initWorksReel } from './works-reel.js?v=141';
+import { initOmikuji } from './omikuji.js?v=152';
+import { initProjectViewer } from './project-viewer.js?v=168';
+
+let projectViewer = { open() {}, close() {} };
 
 function applyThemeVars() {
   const { theme, typography } = config;
@@ -24,14 +29,22 @@ function applyThemeVars() {
   root.style.setProperty('--reveal-duration', `${config.animation.revealDuration}ms`);
 }
 
+function renderActionLink(link) {
+  const href = link.href || '#';
+  const isPdf = /\.pdf(?:$|\?)/i.test(href);
+  const isExternal =
+    Boolean(link.external) || isPdf || href.startsWith('http') || href.startsWith('mailto:');
+  const external = isExternal ? ' target="_blank" rel="noopener"' : '';
+  // PDFs open for viewing; skip the download attribute so the browser can show them inline.
+  // Visitors can still save from the PDF viewer (filename comes from the file path).
+  const download =
+    !isPdf && link.download ? ` download="${link.download}"` : '';
+  return `<a href="${href}"${external}${download}>${link.label}</a>`;
+}
+
 function populateNav() {
   const linksHtml = config.nav.links
-    .map((link) => {
-      const isExternal = Boolean(link.external) || link.href.startsWith('http');
-      const external = isExternal ? ' target="_blank" rel="noopener"' : '';
-      const download = link.download ? ` download="${link.download}"` : '';
-      return `<li><a href="${link.href}"${external}${download}>${link.label}</a></li>`;
-    })
+    .map((link) => `<li>${renderActionLink(link)}</li>`)
     .join('');
 
   const desktop = document.getElementById('nav-list-desktop');
@@ -56,109 +69,37 @@ function createPlaceholderSVG(title, hue = 0) {
 }
 
 function renderProjects() {
-  const grid = document.getElementById('works-grid');
-  const { projects, hiddenProjects, loadMoreLabel } = config.works;
+  // Cinematic reel mounts into #works-reel and owns its own UI.
+  initWorksReel(config);
 
-  const visibleCards = projects
-    .map(
-      (p, i) => `
-    <article class="project-card reveal reveal-delay-${(i % 3) + 1}" data-project-id="${p.id}" tabindex="0" role="link" aria-label="${p.title}">
-      <div class="project-image">
-        <img src="${p.image}" alt="${p.title}" loading="lazy"
-             onerror="this.src='${createPlaceholderSVG(p.title, i * 40)}'">
-      </div>
-      <div class="project-info">
-        <h3 class="project-title">${p.title}</h3>
-        <p class="project-category">${p.category}</p>
-        <p class="project-desc">${p.description || ''}</p>
-      </div>
-    </article>`
-    )
-    .join('');
+  const reel = document.getElementById('works-reel');
+  if (!reel || reel.dataset.openBound === '1') return;
+  reel.dataset.openBound = '1';
 
-  const loadMoreCard = `
-    <div class="project-card project-card--load-more reveal" id="load-more-card" tabindex="0" role="button" aria-label="${loadMoreLabel}">
-      <button class="load-more-btn" tabindex="-1">${loadMoreLabel}</button>
-    </div>`;
-
-  grid.innerHTML = visibleCards + loadMoreCard;
-
-  const activateLoadMore = () => loadHiddenProjects(hiddenProjects);
-  document.getElementById('load-more-card').addEventListener('click', activateLoadMore);
-  document.getElementById('load-more-card').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      activateLoadMore();
-    }
-  });
-
-  grid.querySelectorAll('.project-card:not(.project-card--load-more)').forEach((card) => {
-    const open = () => {
-      const id = card.dataset.projectId;
-      const project = [...projects, ...hiddenProjects].find((p) => String(p.id) === id);
-      if (project) openProject(project);
-    };
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        open();
-      }
-    });
+  reel.addEventListener('works:open', (e) => {
+    const project = e.detail?.project;
+    if (project) openProject(project);
   });
 }
 
 /**
- * Click behavior for a project card:
- * - If `link` is a real URL, open the project page in a new tab.
- * - Otherwise open the lightbox with the project's `images` gallery
- *   (or its single `image` as fallback).
+ * Click behavior for a project:
+ * - If `link` is a real URL, open that page in a new tab.
+ * - Else open the full case-study viewer (easy template in config).
+ * - Fallback: image lightbox if somehow no project data.
  */
 function openProject(project) {
   if (project.link && project.link !== '#') {
     window.open(project.link, '_blank', 'noopener');
     return;
   }
+  if (projectViewer?.open) {
+    projectViewer.open(project);
+    return;
+  }
   const gallery = (project.images && project.images.length ? project.images : [project.image])
     .map((src) => ({ image: src, title: project.title }));
   openLightbox(gallery);
-}
-
-function loadHiddenProjects(hiddenProjects) {
-  const grid = document.getElementById('works-grid');
-  const loadMore = document.getElementById('load-more-card');
-  const startIndex = config.works.projects.length;
-
-  hiddenProjects.forEach((p, i) => {
-    const card = document.createElement('article');
-    card.className = `project-card hidden-project`;
-    card.style.animationDelay = `${i * 100}ms`;
-    card.dataset.projectId = p.id;
-    card.tabIndex = 0;
-    card.setAttribute('role', 'link');
-    card.setAttribute('aria-label', p.title);
-    card.innerHTML = `
-      <div class="project-image">
-        <img src="${p.image}" alt="${p.title}" loading="lazy"
-             onerror="this.src='${createPlaceholderSVG(p.title, (startIndex + i) * 40)}'">
-      </div>
-      <div class="project-info">
-        <h3 class="project-title">${p.title}</h3>
-        <p class="project-category">${p.category}</p>
-      </div>`;
-    const open = () => openProject(p);
-    card.addEventListener('click', open);
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        open();
-      }
-    });
-    grid.insertBefore(card, loadMore);
-  });
-
-  loadMore.style.display = 'none';
-  initAnimations();
 }
 
 function renderTestimonials() {
@@ -303,9 +244,7 @@ function initSeamlessMarquee(trackEl) {
 }
 
 function renderFooterLink(link) {
-  const external = link.href.startsWith('http');
-  const download = link.download ? ` download="${link.download}"` : '';
-  return `<a href="${link.href}"${external ? ' target="_blank" rel="noopener"' : ''}${download}>${link.label}</a>`;
+  return renderActionLink(link);
 }
 
 function renderFooter() {
@@ -314,6 +253,70 @@ function renderFooter() {
 
   document.getElementById('footer-copy').textContent =
     `${config.footer.copyright} © ${config.meta.year}`;
+}
+
+function renderToolsPromo() {
+  const section = document.getElementById('ai-tools');
+  const tool = config.toolsPromo;
+  if (!section || !tool || tool.enabled === false || !tool.href || !tool.image) {
+    section?.setAttribute('hidden', '');
+    return;
+  }
+
+  section.hidden = false;
+
+  const setText = (selector, value) => {
+    const el = section.querySelector(selector);
+    if (el && value) el.textContent = value;
+  };
+
+  setText('[data-tools-promo-title]', tool.title || 'AI Tools');
+  setText('[data-tools-promo-desc]', tool.description);
+  setText('[data-tools-promo-eyebrow]', tool.eyebrow || 'Featured free download');
+  setText('[data-tools-promo-pitch]', tool.pitch);
+  setText('[data-tools-promo-shots-label]', tool.screenshotsLabel || 'Plugin screenshots');
+
+  const image = section.querySelector('[data-tools-promo-image]');
+  const adLink = section.querySelector('[data-tools-promo-link]');
+  const cta = section.querySelector('[data-tools-promo-cta]');
+  const shots = section.querySelector('[data-tools-promo-shots]');
+
+  if (image) {
+    image.src = tool.image;
+    image.alt = `${tool.name || 'Tool'} — ${tool.description || 'AI tool advertisement'}`;
+  }
+
+  if (shots) {
+    const list = Array.isArray(tool.screenshots) ? tool.screenshots : [];
+    shots.innerHTML = list
+      .map(
+        (shot) => `
+      <li class="tools-promo__shot">
+        <figure>
+          <img src="${shot.src}" alt="${shot.alt || ''}" width="811" height="477" loading="lazy" decoding="async">
+          ${shot.caption ? `<figcaption>${shot.caption}</figcaption>` : ''}
+        </figure>
+      </li>`
+      )
+      .join('');
+    shots.hidden = list.length === 0;
+    const shotsBlock = shots.closest('.tools-promo__shots-block');
+    if (shotsBlock) shotsBlock.hidden = list.length === 0;
+  }
+
+  [adLink, cta].forEach((el) => {
+    if (!el) return;
+    el.href = tool.href;
+    el.setAttribute('download', tool.download || 'Scafo.zip');
+  });
+
+  if (adLink) {
+    adLink.setAttribute(
+      'aria-label',
+      tool.ariaLabel || `Download ${tool.name || 'tool'} by Akshay S Dev`
+    );
+  }
+  if (cta) cta.textContent = tool.cta || 'Download free';
 }
 
 function populateConfigText() {
@@ -400,6 +403,25 @@ function initNav() {
     document.body.classList.toggle('nav-open', open);
   }
 
+  function syncHeaderMetrics() {
+    if (!header) return;
+    const height = Math.ceil(header.getBoundingClientRect().height);
+    if (height > 0) {
+      document.documentElement.style.setProperty('--header-height', `${height}px`);
+    }
+
+    const desktopNav = header.querySelector('.nav--desktop');
+    if (desktopNav && window.innerWidth >= 1024) {
+      const navWidth = Math.ceil(desktopNav.getBoundingClientRect().width);
+      document.documentElement.style.setProperty(
+        '--nav-gutter',
+        `${Math.max(navWidth + 24, 96)}px`
+      );
+    } else {
+      document.documentElement.style.setProperty('--nav-gutter', '0px');
+    }
+  }
+
   function updateLogoScale() {
     if (!logo || !hero) return;
 
@@ -423,6 +445,7 @@ function initNav() {
   function onScrollFrame() {
     header.classList.toggle('scrolled', window.scrollY > 40);
     updateLogoScale();
+    syncHeaderMetrics();
     logoRaf = 0;
   }
 
@@ -451,11 +474,13 @@ function initNav() {
 
   window.addEventListener('resize', () => {
     updateLogoScale();
+    syncHeaderMetrics();
     if (window.innerWidth >= 1024 && drawer.classList.contains('open')) {
       setNavOpen(false);
     }
   }, { passive: true });
 
+  syncHeaderMetrics();
   updateLogoScale();
 }
 
@@ -473,16 +498,19 @@ function init() {
   applyThemeVars();
   populateConfigText();
   populateNav();
+  projectViewer = initProjectViewer(config);
   renderProjects();
   renderTestimonials();
   renderBrands();
   renderSkills();
+  renderToolsPromo();
   renderFooter();
   initNav();
   initLightbox();
   initAnimations(config);
   initTheme(config);
   initWeather(config);
+  initOmikuji(config);
 }
 
 document.addEventListener('DOMContentLoaded', init);

@@ -1,4 +1,4 @@
-import { config } from './config.js?v=170';
+import { config } from './config.js?v=172';
 import { initAnimations } from './animations.js?v=30';
 import { initTheme } from './theme.js?v=20';
 import { initWeather } from './weather.js?v=129';
@@ -255,6 +255,50 @@ function renderFooter() {
     `${config.footer.copyright} © ${config.meta.year}`;
 }
 
+function renderToolsPromo() {
+  const section = document.getElementById('ai-tools');
+  const tool = config.toolsPromo;
+  if (!section || !tool || tool.enabled === false || !tool.href || !tool.image) {
+    section?.setAttribute('hidden', '');
+    return;
+  }
+
+  section.hidden = false;
+
+  const setText = (selector, value) => {
+    const el = section.querySelector(selector);
+    if (el && value) el.textContent = value;
+  };
+
+  setText('[data-tools-promo-title]', tool.title || 'AI Tools');
+  setText('[data-tools-promo-desc]', tool.description);
+  setText('[data-tools-promo-eyebrow]', tool.eyebrow || 'Featured free download');
+  setText('[data-tools-promo-pitch]', tool.pitch);
+
+  const image = section.querySelector('[data-tools-promo-image]');
+  const adLink = section.querySelector('[data-tools-promo-link]');
+  const cta = section.querySelector('[data-tools-promo-cta]');
+
+  if (image) {
+    image.src = tool.image;
+    image.alt = `${tool.name || 'Tool'} — ${tool.description || 'AI tool advertisement'}`;
+  }
+
+  [adLink, cta].forEach((el) => {
+    if (!el) return;
+    el.href = tool.href;
+    el.setAttribute('download', tool.download || 'Scafo.zip');
+  });
+
+  if (adLink) {
+    adLink.setAttribute(
+      'aria-label',
+      tool.ariaLabel || `Download ${tool.name || 'tool'} by Akshay S Dev`
+    );
+  }
+  if (cta) cta.textContent = tool.cta || 'Download free';
+}
+
 function populateConfigText() {
   document.querySelectorAll('[data-config]').forEach((el) => {
     const path = el.dataset.config.split('.');
@@ -439,6 +483,7 @@ function init() {
   renderTestimonials();
   renderBrands();
   renderSkills();
+  renderToolsPromo();
   renderFooter();
   initNav();
   initLightbox();

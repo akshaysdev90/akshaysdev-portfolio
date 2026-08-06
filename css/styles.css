@@ -1524,6 +1524,116 @@ html.dark .brands-cell:hover .brands-logo {
   pointer-events: none;
 }
 
+/* ---- AI tools promotion ---- */
+.tools-promo {
+  padding-block: clamp(3.5rem, 8vh, 5.5rem);
+}
+
+.tools-promo__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: min(100%, 36rem);
+  margin-inline: auto;
+  text-align: center;
+}
+
+.tools-promo__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tools-promo__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+.tools-promo__desc {
+  margin: 0;
+  max-width: 28rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--color-text-secondary);
+}
+
+.tools-promo__eyebrow {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.tools-promo__ad {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  background: var(--color-bg-primary);
+  transition: opacity var(--duration-fast);
+}
+
+.tools-promo__ad:hover,
+.tools-promo__ad:focus-visible {
+  opacity: 0.92;
+}
+
+.tools-promo__ad:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+.tools-promo__ad img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.tools-promo__pitch {
+  margin: 0.15rem 0 0;
+  max-width: 30rem;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.tools-promo__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.15rem;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  transition: color var(--duration-fast);
+}
+
+.tools-promo__cta:hover,
+.tools-promo__cta:focus-visible {
+  color: var(--color-accent);
+  outline: none;
+}
+
 /* ---- Footer ---- */
 .footer-top {
   display: grid;

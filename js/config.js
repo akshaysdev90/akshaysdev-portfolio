@@ -809,6 +809,21 @@ export const config = {
     ],
   },
 
+  toolsPromo: {
+    enabled: true,
+    title: "AI Tools",
+    description: "AI tools designed & developed by Akshay S Dev.",
+    pitch:
+      "Not just decks — I ship. Download a free tool I designed and built end to end, and see how I think as a product-minded designer.",
+    eyebrow: "Featured free download",
+    name: "Scafo",
+    image: "assets/tools/scafo-ad.jpg?v=172",
+    href: "assets/tools/Scafo.zip",
+    download: "Scafo.zip",
+    cta: "Download Scafo (.zip)",
+    ariaLabel: "Download Scafo — free font pairing and scaling tool by Akshay S Dev",
+  },
+
   footer: {
     cta: "In search for just a designer? We may not vibe!",
     motto: "Experiments first. Ego later.",

@@ -1,4 +1,4 @@
-import { config } from './config.js?v=172';
+import { config } from './config.js?v=175';
 import { initAnimations } from './animations.js?v=30';
 import { initTheme } from './theme.js?v=20';
 import { initWeather } from './weather.js?v=129';
@@ -274,14 +274,34 @@ function renderToolsPromo() {
   setText('[data-tools-promo-desc]', tool.description);
   setText('[data-tools-promo-eyebrow]', tool.eyebrow || 'Featured free download');
   setText('[data-tools-promo-pitch]', tool.pitch);
+  setText('[data-tools-promo-shots-label]', tool.screenshotsLabel || 'Plugin screenshots');
 
   const image = section.querySelector('[data-tools-promo-image]');
   const adLink = section.querySelector('[data-tools-promo-link]');
   const cta = section.querySelector('[data-tools-promo-cta]');
+  const shots = section.querySelector('[data-tools-promo-shots]');
 
   if (image) {
     image.src = tool.image;
     image.alt = `${tool.name || 'Tool'} — ${tool.description || 'AI tool advertisement'}`;
+  }
+
+  if (shots) {
+    const list = Array.isArray(tool.screenshots) ? tool.screenshots : [];
+    shots.innerHTML = list
+      .map(
+        (shot) => `
+      <li class="tools-promo__shot">
+        <figure>
+          <img src="${shot.src}" alt="${shot.alt || ''}" width="811" height="477" loading="lazy" decoding="async">
+          ${shot.caption ? `<figcaption>${shot.caption}</figcaption>` : ''}
+        </figure>
+      </li>`
+      )
+      .join('');
+    shots.hidden = list.length === 0;
+    const shotsBlock = shots.closest('.tools-promo__shots-block');
+    if (shotsBlock) shotsBlock.hidden = list.length === 0;
   }
 
   [adLink, cta].forEach((el) => {

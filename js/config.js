@@ -817,11 +817,29 @@ export const config = {
       "Not just decks — I ship. Download a free tool I designed and built end to end, and see how I think as a product-minded designer.",
     eyebrow: "Featured free download",
     name: "Scafo",
-    image: "assets/tools/scafo-ad.jpg?v=172",
+    image: "assets/tools/scafo-ad.jpg?v=174",
     href: "assets/tools/Scafo.zip",
     download: "Scafo.zip",
     cta: "Download Scafo (.zip)",
     ariaLabel: "Download Scafo — free font pairing and scaling tool by Akshay S Dev",
+    screenshotsLabel: "Plugin screenshots",
+    screenshots: [
+      {
+        src: "assets/tools/scafo-interface.png?v=174",
+        alt: "Scafo plugin input screen — font name, size, and canvas dimensions",
+        caption: "Input",
+      },
+      {
+        src: "assets/tools/scafo-loading.png?v=174",
+        alt: "Scafo plugin loading state with brand mark",
+        caption: "Analyse",
+      },
+      {
+        src: "assets/tools/scafo-result.png?v=174",
+        alt: "Scafo plugin results — suggested fonts and sizes for subheader and body",
+        caption: "Results",
+      },
+    ],
   },
 
   footer: {
